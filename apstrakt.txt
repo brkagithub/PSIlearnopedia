@@ -4,8 +4,7 @@ našu aplikaciju od običnog bloga je mogućnost čitaoca da se
 testiraju, jer uz svaki članak tražimo od pisaca da okače i
 pitanja koja treba da automatski testiraju znanje čitaoca o toj temi nakon
 što završe sa čitanjem. Članci će biti grupisani po
-kategorijama koje će korisnici moći da pretražuju iz menija
-padajuće liste.
+kategorijama koje će korisnici moći da pretražuju iz menija.
 
 Osim što će pitanja testirati znanje naših korisnika, na
 njihovim profilima biće prikazani rezultati po kategorijama i
