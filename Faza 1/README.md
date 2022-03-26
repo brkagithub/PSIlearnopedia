@@ -1,1 +1,0 @@
-Ovde se nalazi prototip.
