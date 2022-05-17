@@ -7,6 +7,10 @@
   text-align: center;
 }
 
+.verticalAlign {
+  vertical-align: middle;
+}
+
 .backgroundDarkBlue {
   background-color: #1a2238;
   color: #9daaf2;
@@ -78,6 +82,11 @@
 
 .flexCenter {
   justify-content: center;
+  display: flex;
+}
+
+.flexStart {
+  justify-content: start;
   display: flex;
 }
 
