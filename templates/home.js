@@ -89,20 +89,22 @@ $(document).ready(() => {
 
   articles.map((article) => {
     grid.append(`<div class=${col}>
-    <div class="card m-3" >
-    <img src="${article.previewImgURL}" class="card-img-top" alt="...">
-    <div class="card-body">
-    <div class="flex">
-    <h4 class="card-title">${article.title}</h5>
-    <p class="card-text card-likes">${article.likes} likes</p>
-    </div>
-    <p class="card-text card-author">By ${article.author.username}</p>
-    </div>
+    <a href="article.html" class="linkNoDeco">
+      <div class="card m-3" >
+      <img src="${article.previewImgURL}" class="card-img-top" alt="...">
+      <div class="card-body">
+      <div class="flex">
+      <h4 class="card-title">${article.title}</h5>
+      <p class="card-text card-likes">${article.likes} likes</p>
+      </div>
+      <p class="card-text card-author">By ${article.author.username}</p>
+      </div>
 
-    <div class="card-body">
-    <p class="card-text card-desc">${article.shortDescription}</p>
-    </div>
-    </div>
+      <div class="card-body">
+      <p class="card-text card-desc">${article.shortDescription}</p>
+      </div>
+      </div>
+    </a>
     </div>`);
   });
 });
