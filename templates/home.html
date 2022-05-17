@@ -30,8 +30,8 @@
     <title>Learnopedia</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-sm backgroundDarkBlue">
-      <div class="container-fluid">
+    <div class="container-fluid backgroundDarkBlue">
+      <nav class="navbar navbar-expand-sm backgroundDarkBlue">
         <a class="navbar-brand" href="#">
           <img src="logo.jpg" alt="Learnopedia" class="logo" />
         </a>
@@ -84,10 +84,8 @@
             </button>
           </form>
         </div>
-      </div>
-    </nav>
-    <div class="container-fluid">
-      <div class="row backgroundDarkBlue">
+      </nav>
+      <div class="row textAlign backgroundDarkBlue">
         <div class="col-2"></div>
         <div class="col-8 textAlign frontPageQuote">
           <h1 class="textAlign">
@@ -111,9 +109,12 @@
           </h1>
         </div>
         <div class="col-2"></div>
-      </div>
 
-      <div id="articleGrid" class="row textAlign backgroundDarkBlue"></div>
+        <div
+          id="articleGrid"
+          class="row textAlign backgroundDarkBlue grid"
+        ></div>
+      </div>
     </div>
   </body>
 </html>
