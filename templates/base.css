@@ -70,6 +70,17 @@
   flex-wrap: nowrap;
 }
 
+.flexWrap {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.flexCenter {
+  justify-content: center;
+  display: flex;
+}
+
 .card-text {
   color: #9daaf2;
 }
@@ -86,22 +97,4 @@ body {
 
 .linkNoDeco {
   text-decoration: none;
-}
-
-.floatLeft {
-  float: left;
-  text-align: left;
-}
-
-.floatRight {
-  float: right;
-  text-align: right;
-}
-
-.categoryChip {
-  background-color: #9daaf2;
-  color: #1a2238;
-  margin-right: 15px;
-  margin-top: 5px;
-  padding: 8px;
 }
