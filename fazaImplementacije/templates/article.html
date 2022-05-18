@@ -2,6 +2,7 @@
 <html lang="en">
   <!-- Marko Brkic -->
   <head>
+    {% load static %}
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,17 +17,17 @@
       integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
       crossorigin="anonymous"
     ></script>
-    <link rel="stylesheet" href="base.css" />
-    <link rel="stylesheet" href="article.css" />
+    <link rel="stylesheet" href="{% static 'base.css' %}" />
+    <link rel="stylesheet" href="{% static 'article.css' %}" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="article.js"></script>
+    <script src="{% static 'article.js' %}"></script>
     <title>Learnopedia</title>
   </head>
   <body>
     <div class="container-fluid backgroundDarkBlue">
       <nav class="navbar navbar-expand-sm backgroundDarkBlue">
         <a class="navbar-brand" href="home.html">
-          <img src="logo.jpg" alt="Learnopedia" class="logo" />
+          <img src="{% static 'logo.jpg' %}" alt="Learnopedia" class="logo" />
         </a>
         <button
           class="navbar-toggler"
