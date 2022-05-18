@@ -40,7 +40,7 @@ $(document).ready(() => {
 
   categories.map((categoryName) => {
     categoriesEl.append(
-      `<button class="rounded-circle categoryChip">${categoryName}</button>`
+      `<a href="${categoryName}.html" class="textNoDeco"><button class="rounded-circle categoryChip">${categoryName}</button></a>`
     );
   });
 
