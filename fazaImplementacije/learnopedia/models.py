@@ -28,7 +28,7 @@ class Article(models.Model):
 
 
 class ArticleCategory(models.Model):
-    articleId = models.OneToOneField(Article, models.DO_NOTHING, db_column='articleId', primary_key=True)  # Field name made lowercase.
+    articleId = models.OneToOneField(Article, models.DO_NOTHING, db_column='articleId', primary_key=True)  # Field name made lowercase.  takodje treba obrisati primary key
     categoryId = models.ForeignKey('Category', models.DO_NOTHING, db_column='categoryId')  # Field name made lowercase.
 
     class Meta:
