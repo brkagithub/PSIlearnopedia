@@ -44,10 +44,10 @@ $(document).ready(() => {
     );
   });
 
-  authorEl.append(`<h3>profile pic</h3>
+  /*authorEl.append(`<h3>profile pic</h3>
     <a href="${article.author.profileSlug}.html"> <h3 class="underlinedAuthor">${article.author.name}</h3></a>
     <p>Total likes: ${article.author.totalLikes}</p>
-    <h6>From same author</h6>`);
+    <h6>From same author</h6>`);*/
 
   article.author.articles.map((article) => {
     authorEl.append(
@@ -55,7 +55,7 @@ $(document).ready(() => {
     );
   });
 
-  title.html(article.title);
+  //title.html(article.title);
 
-  contentEl.append(`<div class="mt-20">${article.content}</div>`);
+  //contentEl.append(`<div class="mt-20">${article.content}</div>`);
 });

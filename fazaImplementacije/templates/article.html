@@ -81,8 +81,12 @@
       </nav>
       <div id="articlePreview" class="row textAlign backgroundDarkBlue">
         <div class="article col-12 col-lg-9">
-          <h1 id="title"></h1>
-          <div id="content" class="marginLR60"></div>
+          <h1 id="title">
+              {{ article.title }}
+          </h1>
+          <div id="content" class="marginLR60">
+              {{ article.textContent }}
+          </div>
           <a href="questions.html"
             ><button class="btnTest">Test yourself</button></a
           >
@@ -116,7 +120,12 @@
             </div>
           </div>
         </div>
-        <div id="author" class="author col-12 col-lg-3"></div>
+        <div id="author" class="author col-12 col-lg-3">
+            <h3>profile pic</h3>
+            <a href={% url 'profile' article.korisnikId.id %}> <h3 class="underlinedAuthor">{{ article.korisnikId.first_name }} {{ article.korisnikId.last_name }}</h3> </a>
+            <p>Total likes: {{ totalLikes }}</p>
+            <h6>From same author</h6>
+        </div>
       </div>
     </div>
   </body>

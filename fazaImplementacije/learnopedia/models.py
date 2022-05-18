@@ -71,7 +71,7 @@ class Question(models.Model):
         db_table = 'Question'
 
 class KorisnikArticleGrade(models.Model):
-    articleId = models.OneToOneField(Article, models.DO_NOTHING, db_column='articleId', primary_key=True)  # Field name made lowercase.
+    articleId = models.ForeignKey(Article, models.DO_NOTHING, db_column='articleId')  # Field name made lowercase.
     korisnikId = models.ForeignKey(Korisnik, models.DO_NOTHING, db_column='korisnikId')  # Field name made lowercase.
     grade = models.IntegerField()
 
@@ -81,7 +81,7 @@ class KorisnikArticleGrade(models.Model):
 
 
 class KorisnikLikedArticle(models.Model):
-    korisnikId = models.OneToOneField(Korisnik, models.DO_NOTHING, db_column='korisnikId', primary_key=True)  # Field name made lowercase.
+    korisnikId = models.ForeignKey(Korisnik, models.DO_NOTHING, db_column='korisnikId')  # Field name made lowercase.
     articleId = models.ForeignKey(Article, models.DO_NOTHING, db_column='articleId')  # Field name made lowercase.
 
     class Meta:
