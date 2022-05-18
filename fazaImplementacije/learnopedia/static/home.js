@@ -89,7 +89,7 @@ $(document).ready(() => {
 
   articles.map((article) => {
     grid.append(`<div class=${col}>
-    <a href="article.html" class="linkNoDeco">
+    <a href="../templates/article.html" class="linkNoDeco">
       <div class="card m-3" >
       <img src="${article.previewImgURL}" class="card-img-top" alt="...">
       <div class="card-body">
