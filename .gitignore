@@ -7,3 +7,14 @@
 .env.production.local
 settings.py
 __init__.py
+.idea/PSIlearnopedia.iml
+.gitignore
+.idea/.gitignore
+.idea/misc.xml
+.idea/modules.xml
+.idea/PSIlearnopedia.iml
+.idea/vcs.xml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/inspectionProfiles/Project_Default.xml
+fazaImplementacije/.idea/misc.xml
+fazaImplementacije/.idea/inspectionProfiles/Project_Default.xml
