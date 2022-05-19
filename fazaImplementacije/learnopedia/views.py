@@ -30,7 +30,9 @@ def article(request: HttpRequest, article_id): #view for viewing an article
     #we show three of the most liked articles from the author too
     threeArticles = articlesFromAuthor.filter(~Q(articleId__exact=article_id))[:3] # We should make a numOfLikes field in Article to make this easier
 
-    userLiked = KorisnikLikedArticle.objects.filter(korisnikId__exact=request.user).count() > 0
+    userLiked = False
+    if request.user.is_authenticated:
+        userLiked = KorisnikLikedArticle.objects.filter(korisnikId__exact=request.user).filter(articleId__exact=article_id).count() > 0
 
     context = {"article" : article, "totalLikes": totalLikes, "categoriesToShow" : categoriesToShow, "threeArticles" : threeArticles, "userLiked" : userLiked}
 

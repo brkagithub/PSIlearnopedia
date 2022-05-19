@@ -87,15 +87,18 @@
           <div id="content" class="marginLR60">
               {{ article.textContent }}
           </div>
+          {% if user.is_authenticated %}
           <a href="questions.html"
             ><button class="btnTest">Test yourself</button></a
           >
+          {% endif %}
           <div class="flexWrap marginLR60">
             <div id="categories" class="flexCenter mt-2 textAlign">
                 {% for category in categoriesToShow %}
                     <a href={% url 'category' category.categoryId %} class="textNoDeco"><button class="rounded-circle categoryChip">{{ category.name }}</button></a>
                 {% endfor %}
             </div>
+            {% if user.is_authenticated %}
             <div id="likeDislike" class="mt-2 textAlign flexCenter">
             {% if userLiked == 0 %}
             <a href={% url 'articleLike' article.articleId %}>
@@ -121,6 +124,7 @@
             </a>
             {% endif %}
             </div>
+            {% endif %}
           </div>
         </div>
         <div id="author" class="author col-12 col-lg-3">
