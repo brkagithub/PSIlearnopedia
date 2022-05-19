@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+    {% load static %}
 	<meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,7 +16,7 @@
       integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
       crossorigin="anonymous"
     ></script>
-    <link rel="stylesheet" href="home.css" />
+    <link rel="stylesheet" href="{% static 'base.css' %}"  />
     <script>
       var promenljiva = false;
     </script>
@@ -34,7 +35,7 @@
 	<nav class="navbar navbar-expand-sm backgroundDarkBlue">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">
-          <img src="logo.jpg" alt="Learnopedia" class="logo" />
+          <img src={% static 'logo.jpg' %} alt="Learnopedia" class="logo" />
         </a>
         <button
           class="navbar-toggler"
@@ -64,13 +65,13 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
+              <a class="nav-link" href="#">Home</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">Articles</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Login</a>
+              <a class="nav-link active" aria-current="page" href="#">Login</a>
             </li>
           </ul>
           <form class="d-flex">
@@ -126,7 +127,7 @@
             </div>
 
             <div>
-              <p class="mb-0">Don't have an account? <a href="#!" class="text-white-50 fw-bold">Sign Up</a>
+              <p class="mb-0">Don't have an account? <a href={% url 'register'  %} class="text-white-50 fw-bold">Sign Up</a>
               </p>
             </div>
 
