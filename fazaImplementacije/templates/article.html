@@ -57,13 +57,13 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link" href="home.html">Articles</a>
+              <a class="nav-link" href={% url 'home' %}>Articles</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">Login</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="categories.html">Categories</a>
+              <a class="nav-link" href={% url 'categories' %}>Categories</a>
             </li>
           </ul>
           <form class="d-flex">
@@ -91,7 +91,11 @@
             ><button class="btnTest">Test yourself</button></a
           >
           <div class="flexWrap marginLR60">
-            <div id="categories" class="flexCenter mt-2 textAlign"></div>
+            <div id="categories" class="flexCenter mt-2 textAlign">
+                {% for category in categoriesToShow %}
+                    <a href={% url 'category' category.categoryId %} class="textNoDeco"><button class="rounded-circle categoryChip">{{ category.name }}</button></a>
+                {% endfor %}
+            </div>
             <div id="likeDislike" class="mt-2 textAlign flexCenter">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -125,6 +129,9 @@
             <a href={% url 'profile' article.korisnikId.id %}> <h3 class="underlinedAuthor">{{ article.korisnikId.first_name }} {{ article.korisnikId.last_name }}</h3> </a>
             <p>Total likes: {{ totalLikes }}</p>
             <h6>From same author</h6>
+            {% for article in threeArticles %}
+                <a href={% url 'article' article.articleId %}><h5>{{ article.title }}</h5></a>
+            {% endfor %}
         </div>
       </div>
     </div>
