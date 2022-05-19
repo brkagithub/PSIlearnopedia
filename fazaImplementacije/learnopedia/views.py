@@ -1,14 +1,26 @@
-from django.shortcuts import render
-
 # Create your views here.
 
+from django.contrib.auth.forms import AuthenticationForm
+from .forms import *
 from django.http import HttpRequest
 from .models import *
 from django.db.models import Q
 from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate, logout
 
 def index(request: HttpRequest):
-    return render(request, 'home.html')
+    searchform = SearchForm(request.POST or None)
+    articles = []
+    if searchform.is_valid():
+        term = searchform.cleaned_data["filter"]
+        articles = Article.objects.filter(Q(textContent__contains=term) | Q(title__contains=term) | Q(korisnikId__username__contains=term) )
+    else:
+        articles = Article.objects.order_by('-title')
+    context = {
+        'searchform': searchform,
+        'articles':articles
+    }
+    return render(request, 'home.html', context)
 
 def article(request: HttpRequest, article_id): #view for viewing an article
     article = Article.objects.get(pk=article_id)
@@ -51,6 +63,7 @@ def articleLike(request: HttpRequest, article_id): #view for liking an article
         article.save()
     return redirect('article', article_id)
 
+
 def returnCategory(articleCategory: ArticleCategory):
     return articleCategory.categoryId
 
@@ -91,3 +104,43 @@ def category(request: HttpRequest, category_id):
 
 def categories(request: HttpRequest):
     return render(request, 'categories.html')
+
+
+def login_req(request: HttpRequest):
+    form = AuthenticationForm(request=request, data=request.POST or None)
+    if form.is_valid():
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        user = authenticate(username=username, password=password)
+
+        if user:
+            login(request, user)
+            print("Successful login")
+            return redirect('home')
+    else:
+        print("Unuccessful login")
+
+    context = {
+        'form': form
+    }
+    return render(request, 'login.html', context)
+
+
+def logout_req(request: HttpRequest):
+    logout(request)
+    return redirect('home')
+
+def registration(request: HttpRequest):
+    form = KorisnikCreationForm(request.POST, request.FILES)
+    if form.is_valid():
+        user:Korisnik = form.save()
+        login(request, user)
+        return redirect('home')
+    else:
+        for field in form:
+            print("Field Error:", field.name, field.errors)
+
+    context = {
+        'form': form
+    }
+    return render(request, 'register.html', context)

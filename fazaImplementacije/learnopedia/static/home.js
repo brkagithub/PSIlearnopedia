@@ -1,4 +1,4 @@
-$(document).ready(() => {
+/*$(document).ready(() => {
   const articles = [
     {
       title: "Impact of family",
@@ -107,4 +107,4 @@ $(document).ready(() => {
     </a>
     </div>`);
   });
-});
+});*/
