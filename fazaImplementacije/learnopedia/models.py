@@ -22,13 +22,14 @@ class Article(models.Model):
     textContent = models.TextField(db_column='textContent')  # Field name made lowercase.
     previewPicture = models.TextField(db_column='previewPicture', blank=True, null=True)  # Field name made lowercase.
     korisnikId = models.ForeignKey('Korisnik', models.DO_NOTHING, db_column='korisnikId')  # Field name made lowercase.
+    numOfLikes = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'Article'
 
 
 class ArticleCategory(models.Model):
-    articleId = models.OneToOneField(Article, models.DO_NOTHING, db_column='articleId', primary_key=True)  # Field name made lowercase.
+    articleId = models.ForeignKey(Article, models.DO_NOTHING, db_column='articleId')  # Field name made lowercase.
     categoryId = models.ForeignKey('Category', models.DO_NOTHING, db_column='categoryId')  # Field name made lowercase.
 
     class Meta:
