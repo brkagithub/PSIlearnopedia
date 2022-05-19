@@ -20,6 +20,7 @@ from .views import *
 urlpatterns = [
     path('', index, name="home"),
     path('article/<int:article_id>', article, name="article"),
+    path('article/like/<int:article_id>', articleLike, name="articleLike"),
     path('profile/<int:profile_id>', profile, name="profile"),
     path('category/<int:category_id>', category, name="category"),
     path('categories', categories, name="categories")
