@@ -22,6 +22,7 @@ class Article(models.Model):
     textContent = models.TextField(db_column='textContent')  # Field name made lowercase.
     previewPicture = models.TextField(db_column='previewPicture', blank=True, null=True)  # Field name made lowercase.
     korisnikId = models.ForeignKey('Korisnik', models.DO_NOTHING, db_column='korisnikId')  # Field name made lowercase.
+    numOfLikes = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'Article'

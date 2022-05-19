@@ -13,7 +13,7 @@ def index(request: HttpRequest):
 def article(request: HttpRequest, article_id): #view for viewing an article
     article = Article.objects.get(pk=article_id)
 
-    articlesFromAuthor = Article.objects.filter(korisnikId__exact=article.korisnikId)
+    articlesFromAuthor = Article.objects.filter(korisnikId__exact=article.korisnikId).order_by('-numOfLikes') #we sort it by likes
 
     totalLikes = 0
 
@@ -28,7 +28,7 @@ def article(request: HttpRequest, article_id): #view for viewing an article
         categoriesToShow.append(category.categoryId)
 
     #we show three of the most liked articles from the author too
-    threeArticles = articlesFromAuthor.filter(~Q(articleId__exact=article_id))[:3] # We should make a numOfLikes field in Article to make this easier
+    threeArticles = articlesFromAuthor.filter(~Q(articleId__exact=article_id))[:3] # sorted by likes already
 
     userLiked = False
     if request.user.is_authenticated:
@@ -43,9 +43,12 @@ def articleLike(request: HttpRequest, article_id): #view for liking an article
     if(KorisnikLikedArticle.objects.filter(articleId__exact=article_id).filter(korisnikId__exact=request.user.id).count() == 0): #if he liked
         newLike = KorisnikLikedArticle.objects.create(articleId=article, korisnikId=request.user)
         newLike.save()
+        article.numOfLikes+=1
+        article.save()
     else:
         KorisnikLikedArticle.objects.filter(articleId__exact=article_id).filter(korisnikId__exact=request.user.id).delete()
-
+        article.numOfLikes -= 1
+        article.save()
     return redirect('article', article_id)
 
 
