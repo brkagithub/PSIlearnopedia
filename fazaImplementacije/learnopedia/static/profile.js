@@ -89,7 +89,7 @@ $(document).ready(() => {
   const popularArticlesEl = $("#popularArticles");
   const grades = $("#grades");
 
-  profileInfo.append(`<div class="card mb-3 col-12">
+  /*profileInfo.append(`<div class="card mb-3 col-12">
   <div class="row g-0">
     <div class="col-md-1 textAlign verticalAlign">
       <img src="logo.jpg" class="profilePic rounded" alt="..." />
@@ -107,9 +107,9 @@ $(document).ready(() => {
       </div>
     </div>
   </div>
-</div>`);
+</div>`);*/
 
-  profile.popularArticles.map((article) => {
+  /*profile.popularArticles.map((article) => {
     popularArticlesEl.append(`<a href="${article.slug}.html" class="linkNoDeco cardArticles">
     <div class="card card200px">
         <div class="card-body">
@@ -123,9 +123,9 @@ $(document).ready(() => {
         </div>
   </div>
   </a>`);
-  });
+  });*/
 
-  profile.grades.map((grade) => {
+  /*profile.grades.map((grade) => {
     grades.append(`<div class="card card200px">
       <div class="card-body">
       <h5 class="card-title">${grade.categoryName}</h5>
@@ -136,5 +136,5 @@ $(document).ready(() => {
       </div>
       </div>
 </div>`);
-  });
+  });*/
 });

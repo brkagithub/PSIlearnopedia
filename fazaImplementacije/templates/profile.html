@@ -79,13 +79,61 @@
           </form>
         </div>
       </nav>
-      <div id="profileInfo" class="row"></div>
+      <div id="profileInfo" class="row">
+          <div class="card mb-3 col-12">
+             <div class="row g-0">
+                 <div class="col-md-1 textAlign verticalAlign">
+                    <img src="logo.jpg" class="profilePic rounded" alt="..." />
+                 </div>
+                 <div class="col-md-11">
+                     <div class="card-body">
+                        <h3 class="card-title textAlignLeft">{{profile.first_name}} {{ profile.last_name }}</h3>
+                        <p class="card-text">
+                            <small>{{profile.username}}</small>
+                        </p>
+                        <p class="card-text">
+                            Add description to models when not lazy...
+                        </p>
+                         {% if request.user == profile %}
+                            <a href="update.html"><button>Update</button></a>
+                         {% endif %}
+                    </div>
+                </div>
+             </div>
+        </div>
+      </div>
       <div class="row">
         <div id="popularArticles" class="col-12 col-md-6">
           <h2 class="textAlign mt-3 mb-3">My popular articles</h2>
+          {% for article in top5Articles %}
+              <a href="${article.slug}.html" class="linkNoDeco cardArticles">
+                <div class="card card200px" style="width: 100%">
+                    <div class="card-body flexBody">
+                        <div>
+                            <h5 class="card-title">{{ article.title }}</h5>
+                            <h6 class="card-subtitle mt-1 mb-2 text-muted">{{ article.createdAt }}</h6>
+                        </div>
+                        <p class="card-text textAlign">{{ article.textContent|slice:"0:201" }}...</p>
+                        <div class="card-text">Likes: {{article.numOfLikes}}</div>
+                    </div>
+                </div>
+              </a>
+          {% endfor %}
         </div>
         <div id="grades" class="col-12 col-md-6">
           <h2 class="textAlign mt-3 mb-3">My grades</h2>
+          {% for category in top5Categories %}
+               <div class="card card200px">
+                    <div class="card-body">
+                        <h5 class="card-title">{{category.0}}</h5>
+                        <p class="card-text mt-2 textAlign">Articles read: {{ category.1.0 }}</p>
+                        <p class="card-text textAlign">Average score: {{ category.1.1 }}</p>
+                        <div class="textAlign">
+                            <a href="${grade.slug}.html" class="card-text textAlign width100">See detailed results</a>
+                        </div>
+                    </div>
+               </div>
+          {% endfor %}
         </div>
       </div>
     </div>

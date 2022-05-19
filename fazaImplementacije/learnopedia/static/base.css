@@ -80,6 +80,13 @@
   flex-wrap: wrap;
 }
 
+.flexBody {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
 .flexCenter {
   justify-content: center;
   display: flex;

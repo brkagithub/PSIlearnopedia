@@ -51,9 +51,40 @@ def articleLike(request: HttpRequest, article_id): #view for liking an article
         article.save()
     return redirect('article', article_id)
 
+def returnCategory(articleCategory: ArticleCategory):
+    return articleCategory.categoryId
 
 def profile(request: HttpRequest, profile_id):
-    return render(request, 'profile.html')
+    profile = Korisnik.objects.get(pk=profile_id)
+
+    top5Articles = Article.objects.filter(korisnikId__exact=profile_id).order_by('-numOfLikes')[:5]
+
+    userGrades = KorisnikArticleGrade.objects.filter(korisnikId__exact=profile_id)
+
+    readArticleCategories = {}
+
+    for userGrade in userGrades: # finding top 5 categories the user did tests
+        article = userGrade.articleId # we pass numbers of articles from that category and the average score
+        grade = userGrade.grade
+        articleCategories = ArticleCategory.objects.filter(articleId__exact=article)
+        categories = map(returnCategory, articleCategories)
+
+        for category in categories:
+            if category.name not in readArticleCategories:
+                readArticleCategories[category.name] = (1, grade)
+            else:
+                newCount = readArticleCategories[category.name][0] + 1
+                totalGrade = readArticleCategories[category.name][1] + grade
+
+                readArticleCategories[category.name] = (newCount, totalGrade)
+
+    top5Categories = []
+
+    for categoryAndNum in sorted(readArticleCategories.items(), key=lambda x: x[1][0], reverse=True)[:5]:
+            top5Categories.append((categoryAndNum[0], (categoryAndNum[1][0], round(categoryAndNum[1][1] / categoryAndNum[1][0], 2))))
+
+    context = {"profile" : profile, "top5Articles" : top5Articles, "top5Categories" : top5Categories}
+    return render(request, 'profile.html', context)
 
 def category(request: HttpRequest, category_id):
     return render(request, 'home.html')
