@@ -21,5 +21,8 @@ urlpatterns = [
     path('', index, name="home"),
     path('article/<int:article_id>', article, name="article"),
     path('profile/<int:profile_id>', profile, name="profile"),
-    path('categories', categories, name="categories")
+    path('categories', categories, name="categories"),
+    path('login/', login_req, name='login'),
+    path('logout/', logout_req, name='logout'),
+    path('register/', registration, name='register'),
 ]

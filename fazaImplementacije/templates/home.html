@@ -32,7 +32,7 @@
   <body>
     <div class="container-fluid backgroundDarkBlue">
       <nav class="navbar navbar-expand-sm backgroundDarkBlue">
-        <a class="navbar-brand" href="home.html">
+        <a class="navbar-brand" href="{% url 'home' %}">
           <img src="{% static 'logo.jpg' %}" alt="Learnopedia" class="logo" />
         </a>
         <button
@@ -68,7 +68,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Login</a>
+              <a class="nav-link" href="{% url 'login' %}">Login</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href={% url 'categories' %}>Categories</a>
