@@ -28,4 +28,3 @@ urlpatterns = [
     path('logout/', logout_req, name='logout'),
     path('register/', registration, name='register'),
 ]
->>>>>>> de6bdad5f00286a9cc098471e87219c89a214e96

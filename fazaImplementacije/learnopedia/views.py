@@ -9,7 +9,18 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 
 def index(request: HttpRequest):
-    return render(request, 'home.html')
+    searchform = SearchForm(request.POST or None)
+    articles = []
+    if searchform.is_valid():
+        term = searchform.cleaned_data["filter"]
+        articles = Article.objects.filter(Q(textContent__contains=term) | Q(title__contains=term) | Q(korisnikId__username__contains=term) )
+    else:
+        articles = Article.objects.order_by('-title')
+    context = {
+        'searchform': searchform,
+        'articles':articles
+    }
+    return render(request, 'home.html', context)
 
 def article(request: HttpRequest, article_id): #view for viewing an article
     article = Article.objects.get(pk=article_id)
@@ -101,4 +112,4 @@ def registration(request: HttpRequest):
         'form': form
     }
     return render(request, 'register.html', context)
->>>>>>> de6bdad5f00286a9cc098471e87219c89a214e96
+

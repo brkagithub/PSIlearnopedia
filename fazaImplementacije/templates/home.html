@@ -32,7 +32,7 @@
   <body>
     <div class="container-fluid backgroundDarkBlue">
       <nav class="navbar navbar-expand-sm backgroundDarkBlue">
-        <a class="navbar-brand" href="{% url 'home' %}">
+        <a class="navbar-brand" href="home.html">
           <img src="{% static 'logo.jpg' %}" alt="Learnopedia" class="logo" />
         </a>
         <button
@@ -63,27 +63,21 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href={% url 'home' %}
+              <a class="nav-link active" aria-current="page" href="#"
                 >Articles</a
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'login' %}">Login</a>
+              <a class="nav-link" href="#">Login</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href={% url 'categories' %}>Categories</a>
+              <a class="nav-link" href="categories.html">Categories</a>
             </li>
           </ul>
-          <form class="d-flex">
-            <input
-              class="form-control me-2"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-            />
-            <button class="btn btn-outline-secondary" type="submit">
-              Search
-            </button>
+          <form class="d-flex" method="post">
+              {% csrf_token %}
+              {{ searchform }}
+              <input type="submit" value="Search">
           </form>
         </div>
       </nav>
@@ -112,7 +106,29 @@
         </div>
         <div class="col-2"></div>
       </div>
-      <div id="articleGrid" class="row textAlign backgroundDarkBlue"></div>
+      <div id="articleGrid" class="row textAlign backgroundDarkBlue">
+          {% for article in articles %}
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                  <a href="../../templates/article.html" class="linkNoDeco">
+              <div class="card m-3" >
+              <img src="{{ article.previewPicture }}" class="card-img-top" alt="...">
+              <div class="card-body">
+              <div class="flex">
+              <h4 class="card-title">{{ article.title }}</h4>
+              <!--<p class="card-text card-likes">${article.likes} likes</p>-->
+              </div>
+              <p class="card-text card-author">By {{ article.korisnikId.username }}</p>
+              </div>
+
+              <div class="card-body">
+              <p class="card-text card-desc">{{ article.textContent }}</p>
+              </div>
+              </div>
+              </a>
+              </div>
+          {% endfor %}
+      </div>
     </div>
   </body>
 </html>
+
