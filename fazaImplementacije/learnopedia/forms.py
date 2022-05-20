@@ -8,7 +8,7 @@ class KorisnikCreationForm(UserCreationForm):
 
     class Meta:
         model = Korisnik
-        fields = ['username', 'password1', 'password2', 'first_name', 'last_name']
+        fields = ['username', 'password1', 'password2', 'first_name', 'last_name', 'description']
 
 
 class SearchForm(Form):
