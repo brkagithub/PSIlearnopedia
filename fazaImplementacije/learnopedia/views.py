@@ -10,21 +10,25 @@ from django.contrib.auth import login, authenticate, logout
 
 
 def index(request: HttpRequest):
-    searchform = SearchForm(request.POST or None)
-    articles = []
-    if searchform.is_valid():
-        term = searchform.cleaned_data["filter"]
-        if (term == ''):
-            articles = Article.objects.order_by('-title')
-        else:
+        searchform = SearchForm(request.POST or None)
+        articles = []
+        if searchform.is_valid():
+            term = searchform.cleaned_data["filter"]
             articles = Article.objects.filter(Q(textContent__contains=term) | Q(title__contains=term) | Q(korisnikId__username__contains=term) )
-    else:
-        articles = Article.objects.order_by('-title')
-    context = {
-        'searchform': searchform,
-        'articles':articles
-    }
-    return render(request, 'home.html', context)
+        else:
+            category_id = request.POST.get('category_id')
+            if category_id :
+                ArticlesWithCategory = ArticleCategory.objects.filter(categoryId = category_id)
+                for ArticleWithCategory in ArticlesWithCategory:
+                    articles.append(ArticleWithCategory.articleId)
+            else:
+                articles = Article.objects.order_by('-title')
+        searchform = SearchForm()
+        context = {
+            'searchform': searchform,
+            'articles':articles
+        }
+        return render(request, 'home.html', context)
 
 def makequestions(request: HttpRequest, article_id):
     questionform = QuestionForm(request.POST or None)
@@ -92,6 +96,7 @@ def category(request: HttpRequest, category_id):
     return render(request, 'home.html')
 
 def categories(request: HttpRequest):
+
     searchcategory = SearchCategoryForm(request.POST or None)
     if searchcategory.is_valid():
         term = searchcategory.cleaned_data['filter']

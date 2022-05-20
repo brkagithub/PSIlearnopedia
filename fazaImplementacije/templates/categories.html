@@ -19,6 +19,7 @@
       integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
       crossorigin="anonymous"
     ></script>
+        <link rel="stylesheet" href="{% static 'home.css' %}" />
     <link rel="stylesheet" href="{% static 'base.css' %}" />
     <link rel="stylesheet" href="{% static 'categories.css' %}"  />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -38,12 +39,16 @@
       <div id="categoriesGrid" class="row textAlign backgroundDarkBlue">
       {% for category in categories %}
         <div class="col-lg-4 col-md-6 col-sm-12 borderWhite">
-            <a href={% url 'category' category.categoryId %} class="linkNoDeco">
-            <div class="card-body m-3">
-                <h3 class="card-title">{{ category.name }}</h3>
-                <p class="card-text">{{ category.description }}</p>
-            </div>
-            </a>
+            <form method="post" action="{% url 'home' %}">
+                {% csrf_token %}
+                <button type="submit" value = "{{ category.categoryId }}" name = "category_id"  style="background: none!important;
+                    border: none; cursor: pointer;">
+                    <div class="card-body m-3">
+                        <h3 class="card-title">{{ category.name }}</h3>
+                        <p class="card-text">{{ category.description }}</p>
+                    </div>
+                </button>
+            </form>
         </div>
       {% endfor %}
       </div>
