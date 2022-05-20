@@ -12,3 +12,9 @@ class KorisnikCreationForm(UserCreationForm):
 
 class SearchForm(Form):
     filter = forms.CharField(max_length=50)
+
+class UpdateUserForm(Form):
+    username = forms.CharField(max_length=50, label="Username")
+    firstName = forms.CharField(max_length=50, label="First Name")
+    lastName = forms.CharField(max_length=50, label="Last Name")
+    description = forms.CharField(widget=forms.Textarea, label="Description")

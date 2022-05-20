@@ -9,6 +9,7 @@ class Korisnik(AbstractUser):
     isModerator = models.IntegerField(db_column='isModerator', default=False)  # Field name made lowercase.
     isAdministrator = models.IntegerField(db_column='isAdministrator', default=False)  # Field name made lowercase.
     profilePic = models.TextField(db_column='profilePic', blank=True, null=True)  # Field name made lowercase.
+    description = models.TextField(null=True)
 
     class Meta:
         db_table = 'Korisnik'

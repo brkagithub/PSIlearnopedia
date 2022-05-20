@@ -191,3 +191,20 @@ def deleteCategory(request: HttpRequest, article_id, category_id): #view for del
     articleCategory = ArticleCategory.objects.filter(articleId__exact=article).filter(categoryId__exact=category)
     articleCategory.delete()
     return redirect('article', article_id)
+
+def updateProfile(request: HttpRequest, profile_id): #view for updating a user's profile
+    profile = Korisnik.objects.get(pk=profile_id)
+
+    updateForm = UpdateUserForm(request.POST or None)
+
+    if updateForm.is_valid():
+        print("valid")
+        profile.username = updateForm.cleaned_data["username"]
+        profile.first_name = updateForm.cleaned_data["firstName"]
+        profile.last_name = updateForm.cleaned_data["lastName"]
+        profile.description = updateForm.cleaned_data["description"]
+        profile.save()
+        return redirect("profile", profile.id)
+
+    context = {"profile" : profile, "form": updateForm }
+    return render(request, 'updateProfile.html', context)

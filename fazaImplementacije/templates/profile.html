@@ -92,10 +92,10 @@
                             <small>{{profile.username}}</small>
                         </p>
                         <p class="card-text">
-                            Add description to models when not lazy...
+                            {{ profile.description }}
                         </p>
-                         {% if request.user == profile %}
-                            <a href="update.html"><button>Update</button></a>
+                         {% if user.id == profile.id %}
+                            <a href={% url 'updateProfile' profile.id %}><button class="btn btn-light">Update</button></a>
                          {% endif %}
                     </div>
                 </div>
