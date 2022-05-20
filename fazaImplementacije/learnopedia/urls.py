@@ -27,11 +27,13 @@ urlpatterns = [
     path('login/', login_req, name='login'),
     path('logout/', logout_req, name='logout'),
     path('register/', registration, name='register'),
+    path('create_article/', kreiraj_article,name='create_article'),
     path('ban/<int:profile_id>', ban, name='ban'),
     path('deleteArticle/<int:article_id>', deleteArticle, name='deleteArticle'),
     path('validateArticle/<int:article_id>', validateArticle, name='validateArticle'),
     path('<int:article_id>/deleteCategory/<int:category_id>', deleteCategory, name='deleteCategory'),
     path('updateProfile/<int:profile_id>', updateProfile, name="updateProfile"),
     path('makequestions/<int:article_id>',makequestions, name='makequestion'),
-    path('test/<int:article_id>', test, name="test"),
+    path('test/<int:article_id>', test, name="test")
+
 ]

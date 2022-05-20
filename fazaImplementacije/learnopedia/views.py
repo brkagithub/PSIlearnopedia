@@ -1,3 +1,4 @@
+
 # Create your views here.
 
 from django.contrib.auth.forms import AuthenticationForm
@@ -7,7 +8,7 @@ from .models import *
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
-
+from django.views.decorators.csrf import csrf_exempt
 
 def index(request: HttpRequest):
         searchform = SearchForm(request.POST or None)
@@ -271,4 +272,42 @@ def test(request: HttpRequest, article_id):     #testiranje na pitanjima za clan
     }
     return render(request, 'questions.html', context)
 
+
+@csrf_exempt
+@login_required(login_url='login')
+def kreiraj_article(request: HttpRequest):
+
+    flag=0
+    title = request.POST.get('naslov')
+    kategorije1 = request.POST.getlist('kategorije[]')
+    text = request.POST.get('tekst_artikla')
+    flag = request.POST.get('flag')
+    kategorije = Category.objects.all()
+    last_article=Article.objects.all().reverse()
+    lastArticle=last_article[0]
+    context = {
+                'kategorije':kategorije,
+                'last_id':lastArticle.articleId
+
+    }
+    username = None
+    if request.user.is_authenticated:
+        username = request.user.username
+    current_user = request.user
+    if flag:
+        clanak=Article.objects.create(title=title,slug=text,isValidated=0,textContent=text,previewPicture="",korisnikId=current_user)
+        for kat in kategorije1:
+            kategorijap=Category.objects.filter(Q(name__exact=kat))
+            kategorija=kategorijap[0]
+            clanakKategorija=ArticleCategory.objects.create(articleId=clanak,categoryId=kategorija)
+            clanakKategorija.save()
+        clanak.save()
+        print(clanak.articleId)
+        return redirect('article',clanak.articleId)
+        #return render(request,'home.html')
+
+
+
+
+    return render(request, 'create_article.html', context)
 
