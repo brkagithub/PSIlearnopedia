@@ -29,16 +29,10 @@
   <body>
   {% block content %}
       <div class="row textAlign">
-        <form class="d-flex searchForm col-12 col-md-6 col-lg-3 textAlign">
-          <input
-            class="form-control me-2"
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
-          />
-          <button class="btn btn-outline-secondary" type="submit">
-            Search
-          </button>
+        <form method="post">
+                {% csrf_token %}
+                {{ searchCategory }}
+                <input type="submit" value="Search">
         </form>
       </div>
       <div id="categoriesGrid" class="row textAlign backgroundDarkBlue">

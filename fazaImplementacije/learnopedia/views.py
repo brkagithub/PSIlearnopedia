@@ -92,8 +92,16 @@ def category(request: HttpRequest, category_id):
     return render(request, 'home.html')
 
 def categories(request: HttpRequest):
-    categories = Category.objects.all()
-    context = {"categories" : categories}
+    searchcategory = SearchCategoryForm(request.POST or None)
+    if searchcategory.is_valid():
+        term = searchcategory.cleaned_data['filter']
+        categories = Category.objects.filter(Q(name__contains = term) | Q(description__contains = term))
+    else:
+        categories = Category.objects.all()
+    context = {
+        'categories' : categories,
+        'searchCategory' : searchcategory,
+            }
     return render(request, 'categories.html', context)
 
 

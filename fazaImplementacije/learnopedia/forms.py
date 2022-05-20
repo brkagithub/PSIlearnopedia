@@ -34,3 +34,7 @@ class QuestionForm(Form):
 class Testiranje(Form):
     answers = forms.ChoiceField(widget=RadioSelect(), choices=[('answer1', ""), ('answer2', ""), ('answer3', ""), ('answer4', "")])
 
+
+class SearchCategoryForm(Form):
+    filter = forms.CharField(max_length=50)
+
