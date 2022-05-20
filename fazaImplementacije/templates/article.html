@@ -94,9 +94,15 @@
           {% endif %}
           <div class="flexWrap marginLR60">
             <div id="categories" class="flexCenter mt-2 textAlign">
+            {% if user.is_authenticated and user.isModerator > 0 or user.isAdministrator > 0 %}
+                {% for category in categoriesToShow %}
+                    <a href={% url 'deleteCategory' article.articleId category.categoryId %} class="textNoDeco"><button class="rounded-circle categoryChip">{{ category.name }} x</button></a>
+                {% endfor %}
+            {% else %}
                 {% for category in categoriesToShow %}
                     <a href={% url 'category' category.categoryId %} class="textNoDeco"><button class="rounded-circle categoryChip">{{ category.name }}</button></a>
                 {% endfor %}
+            {% endif %}
             </div>
             {% if user.is_authenticated %}
             <div id="likeDislike" class="mt-2 textAlign flexCenter">

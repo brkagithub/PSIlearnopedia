@@ -184,3 +184,10 @@ def validateArticle(request: HttpRequest, article_id): #view for approving an ar
     article.isValidated=1
     article.save()
     return redirect('article', article_id)
+
+def deleteCategory(request: HttpRequest, article_id, category_id): #view for deleting a category from an article
+    article = Article.objects.get(pk=article_id)
+    category = Category.objects.get(pk=category_id)
+    articleCategory = ArticleCategory.objects.filter(articleId__exact=article).filter(categoryId__exact=category)
+    articleCategory.delete()
+    return redirect('article', article_id)
