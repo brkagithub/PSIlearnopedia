@@ -83,8 +83,6 @@ def articleLike(request: HttpRequest, article_id): #view for liking an article
     return redirect('article', article_id)
 
 
-def profile(request: HttpRequest, profile_id):
-    return render(request, 'profile.html')
 
 def category(request: HttpRequest, category_id):
     return render(request, 'home.html')
@@ -132,3 +130,100 @@ def registration(request: HttpRequest):
     }
     return render(request, 'register.html', context)
 
+def returnCategory(articleCategory: ArticleCategory): #helper function to return catId from ArticleCategory class
+    return articleCategory.categoryId
+
+def profile(request: HttpRequest, profile_id): #view for profile - shows basic info, most popular articles and grades by categories
+    profile = Korisnik.objects.get(pk=profile_id)
+
+    top5Articles = Article.objects.filter(korisnikId__exact=profile_id).order_by('-numOfLikes')[:5]
+
+    userGrades = KorisnikArticleGrade.objects.filter(korisnikId__exact=profile_id)
+
+    readArticleCategories = {}
+
+    for userGrade in userGrades: # finding top 5 categories the user did tests
+        article = userGrade.articleId # we pass numbers of articles from that category and the average score
+        grade = userGrade.grade
+        articleCategories = ArticleCategory.objects.filter(articleId__exact=article)
+        categories = map(returnCategory, articleCategories)
+
+        for category in categories:
+            if category.name not in readArticleCategories:
+                readArticleCategories[category.name] = (1, grade)
+            else:
+                newCount = readArticleCategories[category.name][0] + 1
+                totalGrade = readArticleCategories[category.name][1] + grade
+
+                readArticleCategories[category.name] = (newCount, totalGrade)
+
+    top5Categories = []
+
+    for categoryAndNum in sorted(readArticleCategories.items(), key=lambda x: x[1][0], reverse=True)[:5]:
+            top5Categories.append((categoryAndNum[0], (categoryAndNum[1][0], round(categoryAndNum[1][1] / categoryAndNum[1][0], 2))))
+
+    context = {"profile" : profile, "top5Articles" : top5Articles, "top5Categories" : top5Categories}
+    return render(request, 'profile.html', context)
+def ban(request: HttpRequest, profile_id): #view for banning a user - deletes everything the user ever made (USE WITH CAUTION)
+    user = Korisnik.objects.get(pk=profile_id) #delete everything related to this user
+
+    for article in Article.objects.filter(korisnikId__exact=profile_id):
+        for articleCategory in ArticleCategory.objects.filter(articleId__exact=article):
+            articleCategory.delete()
+        for articleGrade in KorisnikArticleGrade.objects.filter(Q(articleId__exact=article)  | Q(korisnikId__exact=profile_id)):
+            articleGrade.delete()
+        for articleLike in KorisnikLikedArticle.objects.filter(Q(articleId__exact=article)  | Q(korisnikId__exact=profile_id)):
+            articleLike.delete()
+        for question in Question.objects.filter(articleId__exact=article):
+            question.delete()
+        for comment in Comment.objects.filter(articleId__exact=article):
+            comment.delete()
+        article.delete()
+
+    user.delete()
+    return redirect('home')
+
+def deleteArticle(request: HttpRequest, article_id): #view for deleting an article - deletes everything related to it too
+    article = Article.objects.get(pk=article_id)
+    for articleCategory in ArticleCategory.objects.filter(articleId__exact=article):
+        articleCategory.delete()
+    for articleGrade in KorisnikArticleGrade.objects.filter(articleId__exact=article):
+        articleGrade.delete()
+    for articleLike in KorisnikLikedArticle.objects.filter(articleId__exact=article):
+        articleLike.delete()
+    for question in Question.objects.filter(articleId__exact=article):
+        question.delete()
+    for comment in Comment.objects.filter(articleId__exact=article):
+        comment.delete()
+    article.delete()
+    return redirect('home')
+
+def validateArticle(request: HttpRequest, article_id): #view for approving an article by a moderator
+    article = Article.objects.get(pk=article_id)
+    article.isValidated=1
+    article.save()
+    return redirect('article', article_id)
+
+def deleteCategory(request: HttpRequest, article_id, category_id): #view for deleting a category from an article
+    article = Article.objects.get(pk=article_id)
+    category = Category.objects.get(pk=category_id)
+    articleCategory = ArticleCategory.objects.filter(articleId__exact=article).filter(categoryId__exact=category)
+    articleCategory.delete()
+    return redirect('article', article_id)
+
+def updateProfile(request: HttpRequest, profile_id): #view for updating a user's profile
+    profile = Korisnik.objects.get(pk=profile_id)
+
+    updateForm = UpdateUserForm(request.POST or None)
+
+    if updateForm.is_valid():
+        print("valid")
+        profile.username = updateForm.cleaned_data["username"]
+        profile.first_name = updateForm.cleaned_data["firstName"]
+        profile.last_name = updateForm.cleaned_data["lastName"]
+        profile.description = updateForm.cleaned_data["description"]
+        profile.save()
+        return redirect("profile", profile.id)
+
+    context = {"profile" : profile, "form": updateForm }
+    return render(request, 'updateProfile.html', context)
