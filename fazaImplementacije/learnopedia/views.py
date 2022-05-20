@@ -14,7 +14,10 @@ def index(request: HttpRequest):
     articles = []
     if searchform.is_valid():
         term = searchform.cleaned_data["filter"]
-        articles = Article.objects.filter(Q(textContent__contains=term) | Q(title__contains=term) | Q(korisnikId__username__contains=term) )
+        if (term == ''):
+            articles = Article.objects.order_by('-title')
+        else:
+            articles = Article.objects.filter(Q(textContent__contains=term) | Q(title__contains=term) | Q(korisnikId__username__contains=term) )
     else:
         articles = Article.objects.order_by('-title')
     context = {
@@ -35,6 +38,7 @@ def makequestions(request: HttpRequest, article_id):
         article= Article.objects.get(articleId=article_id)
         question = Question(correct=choice,answer1=answer1,answer2=answer2,answer3=answer3,answer4=answer4,articleId=article,text=textquestion,points=0)
         question.save()
+        questionform = QuestionForm()
     context ={
         'questionform' : questionform,
     }

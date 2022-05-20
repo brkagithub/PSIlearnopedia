@@ -41,45 +41,49 @@
         <form method="post">
                 {% csrf_token %}
             <div class="question ml-sm-5 pl-sm-5 pt-2">
-                <div class="py-2 h5"><b>Question: <!--<input class="pitanje" type="text" name="" id="pitanje"> -->
-                {{ questionform.Question }}</b></div>
+                <div class="py-2 h5">
+                    <b>Question: <!--<input class="pitanje" type="text" name="" id="pitanje"> -->
+                    {{ questionform.Question }}</b>
+                </div>
+                <div>
+                    <h5>Choose <b>one</b> correct answer!</h5>
+                </div>
+
                 <div class="ml-md-6 ml-sm-6 pl-md-7 pt-sm-0 pt-3" id="options">
 
                     <table style="margin:10px;" class="test " >
-                        <tr>
-                            <td>Answer 1:</td>
-                            <td>
-                                <!--<input class="odgovor" type="text" name="" id="odgovor1" />-->
-                                 {{ questionform.Answer1 }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Answer 2:   </td>
-                            <td>
-                                <!--<input class="odgovor" type="text" name="" id="odgovor1" />-->
-                                {{ questionform.Answer2 }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Answer 3: </td>
-                            <td>
-                                <!--<input class="odgovor" type="text" name="" id="odgovor1" />-->
-                                {{ questionform.Answer3 }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Answer 4: </td>
-                            <td>
-                                <!--<input class="odgovor" type="text" name="" id="odgovor1" />-->
-                                {{ questionform.Answer4 }}
-                            </td>
+
+                            {% for choice in questionform.choice %}
+                                <tr>
+                                {% if forloop.counter0 == 0 %}
+                                    <td>Answer1</td>
+                                    <td> {{ questionform.Answer1 }}</td>
+                                    <td>{{ choice }}</td>
+                                {% endif %}
+                                {% if forloop.counter0 == 1 %}
+                                    <td>Answer2</td>
+                                    <td> {{ questionform.Answer2 }}</td>
+                                    <td>{{ choice }}</td>
+                                {% endif %}
+                                {% if forloop.counter0 == 2  %}
+                                    <td>Answer3</td>
+                                    <td> {{ questionform.Answer3 }}</td>
+                                    <td>{{ choice }}</td>
+                                {% endif %}
+                                {% if forloop.counter0 == 3 %}
+                                    <td>Answer4</td>
+                                    <td> {{ questionform.Answer4 }}</td>
+                                    <td>{{ choice }}</td>
+                                {% endif %}
+                                </tr>
+                            {% endfor %}
+
                     </table>
 
                 </div>
-                {{ questionform.choice }}
             </div>
                 <input type="submit" value="Next" class="btn btn-success" style="float: right">
-                <input type="submit" value="Done" class="btn btn-success" style="float: left">`
+                <input type="submit" value="Done" class="btn btn-success" style="float: left">
         </form>
         <div class="d-flex align-items-center pt-3">
             <div class="ml-auto mr-sm-5">
