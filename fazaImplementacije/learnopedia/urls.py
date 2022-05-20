@@ -33,4 +33,5 @@ urlpatterns = [
     path('<int:article_id>/deleteCategory/<int:category_id>', deleteCategory, name='deleteCategory'),
     path('updateProfile/<int:profile_id>', updateProfile, name="updateProfile"),
     path('makequestions/<int:article_id>',makequestions, name='makequestion'),
+    path('test/<int:article_id>', test, name="test"),
 ]

@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 # Create your views here.
 
 from django.contrib.auth.forms import AuthenticationForm
@@ -229,3 +230,144 @@ def updateProfile(request: HttpRequest, profile_id): #view for updating a user's
 
     context = {"profile" : profile, "form": updateForm }
     return render(request, 'updateProfile.html', context)
+=======
+# Create your views here.
+
+from django.contrib.auth.forms import AuthenticationForm
+from .forms import *
+from django.http import HttpRequest
+from .models import *
+from django.db.models import Q
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate, logout
+
+def index(request: HttpRequest):
+    searchform = SearchForm(request.POST or None)
+    articles = []
+    if searchform.is_valid():
+        term = searchform.cleaned_data["filter"]
+        articles = Article.objects.filter(Q(textContent__contains=term) | Q(title__contains=term) | Q(korisnikId__username__contains=term) )
+    else:
+        articles = Article.objects.order_by('-title')
+    context = {
+        'searchform': searchform,
+        'articles':articles
+    }
+    return render(request, 'home.html', context)
+
+def article(request: HttpRequest, article_id): #view for viewing an article
+    article = Article.objects.get(pk=article_id)
+
+    articlesFromAuthor = Article.objects.filter(korisnikId__exact=article.korisnikId).order_by('-numOfLikes') #we sort it by likes
+
+    totalLikes = 0
+
+    for a in articlesFromAuthor:
+        totalLikes += KorisnikLikedArticle.objects.filter(articleId__exact=a.articleId).count() #so we can show totalLikes
+
+    categories = ArticleCategory.objects.filter(articleId__exact=article_id)
+
+    categoriesToShow = [] #we show all categories of the article
+
+    for category in categories:
+        categoriesToShow.append(category.categoryId)
+
+    #we show three of the most liked articles from the author too
+    threeArticles = articlesFromAuthor.filter(~Q(articleId__exact=article_id))[:3] # sorted by likes already
+
+    userLiked = False
+    if request.user.is_authenticated:
+        userLiked = KorisnikLikedArticle.objects.filter(korisnikId__exact=request.user).filter(articleId__exact=article_id).count() > 0
+
+    context = {"article" : article, "totalLikes": totalLikes, "categoriesToShow" : categoriesToShow, "threeArticles" : threeArticles, "userLiked" : userLiked}
+
+    return render(request, 'article.html', context)
+
+def articleLike(request: HttpRequest, article_id): #view for liking an article
+    article = Article.objects.get(pk=article_id)
+    if(KorisnikLikedArticle.objects.filter(articleId__exact=article_id).filter(korisnikId__exact=request.user.id).count() == 0): #if he liked
+        newLike = KorisnikLikedArticle.objects.create(articleId=article, korisnikId=request.user)
+        newLike.save()
+        article.numOfLikes+=1
+        article.save()
+    else:
+        KorisnikLikedArticle.objects.filter(articleId__exact=article_id).filter(korisnikId__exact=request.user.id).delete()
+        article.numOfLikes -= 1
+        article.save()
+    return redirect('article', article_id)
+
+
+def profile(request: HttpRequest, profile_id):
+    return render(request, 'profile.html')
+
+def category(request: HttpRequest, category_id):
+    return render(request, 'home.html')
+
+def categories(request: HttpRequest):
+    return render(request, 'categories.html')
+
+
+def login_req(request: HttpRequest):    #login korisnika
+    form = AuthenticationForm(request=request, data=request.POST or None)
+    if form.is_valid():
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        user = authenticate(username=username, password=password)    #autorizacija korisnika
+
+        if user:
+            login(request, user)         #uspesno logovanje
+            return redirect('home')
+    else:
+        print("Unuccessful login")      #neuspesno logovanje
+
+    context = {
+        'form': form
+    }
+    return render(request, 'login.html', context)
+
+
+def logout_req(request: HttpRequest):        #logout korisnika
+    logout(request)
+    return redirect('home')
+
+def registration(request: HttpRequest):       #registracija korisnika
+    form = KorisnikCreationForm(request.POST, request.FILES)
+    if form.is_valid():
+        user:Korisnik = form.save()          #belezenje u bazu korisnika
+        login(request, user)                 #logovanje novonapravljenog korisnika
+        return redirect('home')
+    else:
+        for field in form:
+            print("Field Error:", field.name, field.errors)
+
+    context = {
+        'form': form
+    }
+    return render(request, 'register.html', context)
+
+
+def test(request: HttpRequest, article_id):     #testiranje na pitanjima za clanak
+
+    forms_questions = []               #forma za svako pitanje
+    answers_questions = []             #lista liste odgovora za svako pitanje
+    iterator = []
+    article = Article.objects.get(pk=article_id)
+    questions = Question.objects.filter(Q(articleId__exact=article_id))   #sva pitanja za izabrani clanak
+    for index in range(len(questions)):
+        forms_questions.append(Testiranje(request.POST or None))     #pravljenje forme za svako pitanje
+        answer1 = questions[index].answer1
+        answer2 = questions[index].answer2
+        answer3 = questions[index].answer3
+        answer4 = questions[index].answer4
+        answers_questions.append([answer1, answer2, answer3, answer4])
+        iterator.append(index)
+
+
+    context = {
+        'questions': questions,
+        'answers_questions': answers_questions,
+        'forms_questions': forms_questions,
+        'iterator': iterator
+    }
+    return render(request, 'questions.html', context)
+

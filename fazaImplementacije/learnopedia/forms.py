@@ -8,11 +8,12 @@ class KorisnikCreationForm(UserCreationForm):
 
     class Meta:
         model = Korisnik
-        fields = ['username', 'password1', 'password2']
+        fields = ['username', 'password1', 'password2', 'first_name', 'last_name']
 
 
 class SearchForm(Form):
     filter = forms.CharField(max_length=50)
+
 
 class UpdateUserForm(Form):
     username = forms.CharField(max_length=50, label="Username")
@@ -29,3 +30,7 @@ class QuestionForm(Form):
     Answer4 = forms.CharField(max_length=50)
     #widget =  forms.RadioSelect(choices=TACNI_ODGOVORI)
     choice = forms.ChoiceField(widget=RadioSelect(), choices=[(1, 'Answer1'), (2, 'Answer2'),(3,'Answer3'),(4,'Answer4')])
+
+class Testiranje(Form):
+    answers = forms.ChoiceField(widget=RadioSelect(), choices=[('answer1', ""), ('answer2', ""), ('answer3', ""), ('answer4', "")])
+
