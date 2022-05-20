@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 
-def index(request: HttpRequest):
+def index(request: HttpRequest): #view for the home page
     searchform = SearchForm(request.POST or None)
     articles = []
     if searchform.is_valid():
@@ -64,10 +64,10 @@ def articleLike(request: HttpRequest, article_id): #view for liking an article
     return redirect('article', article_id)
 
 
-def returnCategory(articleCategory: ArticleCategory):
+def returnCategory(articleCategory: ArticleCategory): #helper function to return catId from ArticleCategory class
     return articleCategory.categoryId
 
-def profile(request: HttpRequest, profile_id):
+def profile(request: HttpRequest, profile_id): #view for profile - shows basic info, most popular articles and grades by categories
     profile = Korisnik.objects.get(pk=profile_id)
 
     top5Articles = Article.objects.filter(korisnikId__exact=profile_id).order_by('-numOfLikes')[:5]
@@ -99,14 +99,14 @@ def profile(request: HttpRequest, profile_id):
     context = {"profile" : profile, "top5Articles" : top5Articles, "top5Categories" : top5Categories}
     return render(request, 'profile.html', context)
 
-def category(request: HttpRequest, category_id):
+def category(request: HttpRequest, category_id): #to do
     return render(request, 'home.html')
 
-def categories(request: HttpRequest):
+def categories(request: HttpRequest): #to do
     return render(request, 'categories.html')
 
 
-def login_req(request: HttpRequest):
+def login_req(request: HttpRequest): #login view
     form = AuthenticationForm(request=request, data=request.POST or None)
     if form.is_valid():
         username = form.cleaned_data['username']
@@ -126,11 +126,11 @@ def login_req(request: HttpRequest):
     return render(request, 'login.html', context)
 
 
-def logout_req(request: HttpRequest):
+def logout_req(request: HttpRequest): #logout view
     logout(request)
     return redirect('home')
 
-def registration(request: HttpRequest):
+def registration(request: HttpRequest): #registration view
     form = KorisnikCreationForm(request.POST, request.FILES)
     if form.is_valid():
         user:Korisnik = form.save()
@@ -145,7 +145,7 @@ def registration(request: HttpRequest):
     }
     return render(request, 'register.html', context)
 
-def ban(request: HttpRequest, profile_id):
+def ban(request: HttpRequest, profile_id): #view for banning a user - deletes everything the user ever made (USE WITH CAUTION)
     user = Korisnik.objects.get(pk=profile_id) #delete everything related to this user
 
     for article in Article.objects.filter(korisnikId__exact=profile_id):
