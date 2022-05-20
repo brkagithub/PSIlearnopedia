@@ -138,10 +138,12 @@
             {% if user.is_authenticated and user.isModerator > 0 or user.isAdministrator > 0 %}
                 <a href={% url 'ban' article.korisnikId.id %}><button class="btn btn-danger mt-2">Ban user</button></a>
                 <br>
-                <button class="btn btn-danger mt-3">Delete article</button>
+                <a href={% url 'deleteArticle' article.articleId %}><button class="btn btn-danger mt-3">Delete article</button></a>
                 <br>
-                <button class="btn btn-success mt-3">Approve article</button>
-                <button class="btn btn-danger mt-3">Disapprove article</button>
+                {% if article.isValidated == 0 %}
+                    <a href={% url 'validateArticle' article.articleId %}><button class="btn btn-success mt-3">Approve article</button></a>
+                <a href={% url 'deleteArticle' article.articleId %}><button class="btn btn-danger mt-3">Disapprove article</button></a>
+                {% endif %}
             {% endif %}
         </div>
       </div>

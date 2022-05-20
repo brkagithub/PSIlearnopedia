@@ -163,3 +163,24 @@ def ban(request: HttpRequest, profile_id): #view for banning a user - deletes ev
 
     user.delete()
     return redirect('home')
+
+def deleteArticle(request: HttpRequest, article_id): #view for deleting an article - deletes everything related to it too
+    article = Article.objects.get(pk=article_id)
+    for articleCategory in ArticleCategory.objects.filter(articleId__exact=article):
+        articleCategory.delete()
+    for articleGrade in KorisnikArticleGrade.objects.filter(articleId__exact=article):
+        articleGrade.delete()
+    for articleLike in KorisnikLikedArticle.objects.filter(articleId__exact=article):
+        articleLike.delete()
+    for question in Question.objects.filter(articleId__exact=article):
+        question.delete()
+    for comment in Comment.objects.filter(articleId__exact=article):
+        comment.delete()
+    article.delete()
+    return redirect('home')
+
+def validateArticle(request: HttpRequest, article_id): #view for approving an article by a moderator
+    article = Article.objects.get(pk=article_id)
+    article.isValidated=1
+    article.save()
+    return redirect('article', article_id)

@@ -28,4 +28,6 @@ urlpatterns = [
     path('logout/', logout_req, name='logout'),
     path('register/', registration, name='register'),
     path('ban/<int:profile_id>', ban, name='ban'),
+    path('deleteArticle/<int:article_id>', deleteArticle, name='deleteArticle'),
+    path('validateArticle/<int:article_id>', validateArticle, name='validateArticle'),
 ]
