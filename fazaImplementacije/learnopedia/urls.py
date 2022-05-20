@@ -27,4 +27,5 @@ urlpatterns = [
     path('login/', login_req, name='login'),
     path('logout/', logout_req, name='logout'),
     path('register/', registration, name='register'),
+    path('ban/<int:profile_id>', ban, name='ban'),
 ]

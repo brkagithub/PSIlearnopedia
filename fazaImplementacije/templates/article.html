@@ -89,7 +89,7 @@
           </div>
           {% if user.is_authenticated %}
           <a href="questions.html"
-            ><button class="btnTest">Test yourself</button></a
+            ><button class="btn btn-light">Test yourself</button></a
           >
           {% endif %}
           <div class="flexWrap marginLR60">
@@ -135,6 +135,14 @@
             {% for article in threeArticles %}
                 <a href={% url 'article' article.articleId %}><h5>{{ article.title }}</h5></a>
             {% endfor %}
+            {% if user.is_authenticated and user.isModerator > 0 or user.isAdministrator > 0 %}
+                <a href={% url 'ban' article.korisnikId.id %}><button class="btn btn-danger mt-2">Ban user</button></a>
+                <br>
+                <button class="btn btn-danger mt-3">Delete article</button>
+                <br>
+                <button class="btn btn-success mt-3">Approve article</button>
+                <button class="btn btn-danger mt-3">Disapprove article</button>
+            {% endif %}
         </div>
       </div>
     </div>

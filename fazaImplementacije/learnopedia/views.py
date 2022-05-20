@@ -144,3 +144,22 @@ def registration(request: HttpRequest):
         'form': form
     }
     return render(request, 'register.html', context)
+
+def ban(request: HttpRequest, profile_id):
+    user = Korisnik.objects.get(pk=profile_id) #delete everything related to this user
+
+    for article in Article.objects.filter(korisnikId__exact=profile_id):
+        for articleCategory in ArticleCategory.objects.filter(articleId__exact=article):
+            articleCategory.delete()
+        for articleGrade in KorisnikArticleGrade.objects.filter(Q(articleId__exact=article)  | Q(korisnikId__exact=profile_id)):
+            articleGrade.delete()
+        for articleLike in KorisnikLikedArticle.objects.filter(Q(articleId__exact=article)  | Q(korisnikId__exact=profile_id)):
+            articleLike.delete()
+        for question in Question.objects.filter(articleId__exact=article):
+            question.delete()
+        for comment in Comment.objects.filter(articleId__exact=article):
+            comment.delete()
+        article.delete()
+
+    user.delete()
+    return redirect('home')
