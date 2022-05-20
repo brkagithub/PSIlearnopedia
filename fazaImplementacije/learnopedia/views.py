@@ -88,7 +88,9 @@ def category(request: HttpRequest, category_id):
     return render(request, 'home.html')
 
 def categories(request: HttpRequest):
-    return render(request, 'categories.html')
+    categories = Category.objects.all()
+    context = {"categories" : categories}
+    return render(request, 'categories.html', context)
 
 
 def login_req(request: HttpRequest):

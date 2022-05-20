@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <!-- Marko Brkic i Ilija Markovic -->
+  <head>
     {% load static %}
+    {% block head %}
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,7 +19,6 @@
       crossorigin="anonymous"
     ></script>
     <link rel="stylesheet" href="{% static 'base.css' %}" />
-    <link rel="stylesheet" href="{% static 'home.css' %}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -25,17 +26,80 @@
       rel="stylesheet"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="{% static 'home.js' %}"></script>
-    <title>
-        {% block title %}
-            Learnopedia
-        {% endblock %}
-    </title>
-</head>
-<body>
-    {% block navbar %}
+    <title>Learnopedia</title>
+    {% endblock %}
+  </head>
+  <body>
+    <div class="container-fluid backgroundDarkBlue">
+{% block navbar %}
+        {% if user.is_authenticated %}
         <nav class="navbar navbar-expand-sm backgroundDarkBlue">
-        <a class="navbar-brand" href="home.html">
+        <a class="navbar-brand" href={% url 'home' %}>
+          <img src="{% static 'logo.jpg' %}" alt="Learnopedia" class="logo" />
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              fill="white"
+              class="bi bi-list"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"
+              />
+            </svg>
+          </span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href={% url 'home' %}
+                >Articles</a
+              >
+            </li>
+              <li class="nav-item">
+              <a class="nav-link" href={% url 'categories' %}
+                >Categories</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="write.html">Write</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href={% url 'profile' user.id %}>Profile</a>
+            </li>
+              <li class="nav-item">
+              <a class="nav-link" href={% url 'logout'%}>Logout</a>
+            </li>
+          </ul>
+          <form class="d-flex">
+            <input
+              class="form-control me-2"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+            />
+            <button class="btn btn-outline-secondary" type="submit">
+              Search
+            </button>
+          </form>
+        </div>
+      </nav>
+      {% else %}
+            <nav class="navbar navbar-expand-sm backgroundDarkBlue">
+        <a class="navbar-brand" href={% url 'home' %}>
           <img src="{% static 'logo.jpg' %}" alt="Learnopedia" class="logo" />
         </a>
         <button
@@ -71,7 +135,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Login</a>
+              <a class="nav-link" href={% url 'login' %}>Login</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href={% url 'categories' %}>Categories</a>
@@ -90,6 +154,10 @@
           </form>
         </div>
       </nav>
+      {% endif %}
     {% endblock %}
-</body>
-</html>
+    {% block content %}
+        Content
+    {% endblock %}
+    </div>
+  </body>

@@ -33,7 +33,7 @@ $(document).ready(() => {
   const grid = $("#categoriesGrid");
 
   const col = `"col-lg-4 col-md-6 col-sm-12 borderWhite"`;
-
+/*
   categories.map((category) => {
     grid.append(`<div class=${col}">
     <a href="#" class="linkNoDeco">
@@ -43,5 +43,5 @@ $(document).ready(() => {
     </div>
     </a>
   </div>`);
-  });
+  });*/
 });
