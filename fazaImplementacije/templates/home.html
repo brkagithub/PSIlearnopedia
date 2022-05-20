@@ -32,7 +32,7 @@
   <body>
     <div class="container-fluid backgroundDarkBlue">
       <nav class="navbar navbar-expand-sm backgroundDarkBlue">
-        <a class="navbar-brand" href="home.html">
+        <a class="navbar-brand" href="{% url 'home' %}">
           <img src="{% static 'logo.jpg' %}" alt="Learnopedia" class="logo" />
         </a>
         <button
@@ -68,7 +68,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Login</a>
+              <a class="nav-link" href="{% url 'login' %}">Login</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="categories.html">Categories</a>
@@ -109,13 +109,13 @@
       <div id="articleGrid" class="row textAlign backgroundDarkBlue">
           {% for article in articles %}
               <div class="col-lg-4 col-md-6 col-sm-12">
-                  <a href={% url 'article' article.articleId %} class="linkNoDeco">
+                  <a href="{%url 'article' article.articleId %}"  class="linkNoDeco">
               <div class="card m-3" >
               <img src="{{ article.previewPicture }}" class="card-img-top" alt="...">
               <div class="card-body">
               <div class="flex">
               <h4 class="card-title">{{ article.title }}</h4>
-              <!--<p class="card-text card-likes">${article.likes} likes</p>-->
+              <p class="card-text card-likes">{{ article.numOfLikes }}</p>
               </div>
               <p class="card-text card-author">By {{ article.korisnikId.username }}</p>
               </div>
@@ -124,7 +124,7 @@
               <p class="card-text card-desc">{{ article.textContent|slice:"0:201" }}...</p>
               </div>
               </div>
-              </a>
+                  </a>
               </div>
           {% endfor %}
       </div>
