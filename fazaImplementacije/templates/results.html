@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    {% load static %}
+
+</head>
+<body>
+    {% block content %}
+
+        <br>
+        <b>Cestitamo na {{ grade }}% na artiklu {{ article_title }}</b>
+
+        <br>
+        <form method="POST" action="{% url 'article' article_id %}">
+                {% csrf_token %}
+                <input class="btn btn-light" type="submit" value="Back"></input>
+            </form>
+
+	{% endblock %}
+</body>
+</html>

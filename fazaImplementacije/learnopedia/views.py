@@ -269,24 +269,35 @@ def test(request: HttpRequest, article_id):     #testiranje na pitanjima za clan
         break
 
     points = 0
+    all_points = 0
     if valid_forms:
         if request.method == 'POST':
             for count, question in enumerate(questions):   #racunanje broja osvojenih poena
                 choice = int(forms_questions[count].cleaned_data["q"+str(count)])
-                print(choice)
-                if question.correct == choice:
+                if question.correct == choice:             #ako je tacan odgovor dodavanje poena
                     points += question.points
-            newGrade = KorisnikArticleGrade.objects.create(articleId=article, korisnikId=korisnik, grade=points)    #upisivanje ocene korisnika na artiklu
+                all_points += question.points
+            grade = points * 100 / all_points
+            oldGrade = KorisnikArticleGrade.objects.filter(articleId__exact=article, korisnikId__exact=korisnik)
+            if oldGrade:
+                oldGrade.delete()                   #brisanje stare ocene na artiklu ako se korisnik vec testirao
+            newGrade = KorisnikArticleGrade.objects.create(articleId=article, korisnikId=korisnik, grade=grade)    #upisivanje ocene korisnika na artiklu
             newGrade.save()
 
-            return redirect('article', article_id)
+            context = {
+                'grade': grade,
+                'article_title': article.title,
+                'article_id': article_id,
+            }
+            return render(request, 'results.html', context)
 
 
 
     context = {
         'forms_questions': forms_questions,
+        'article_id':article_id,
     }
-    return render(request, 'questions.html', context)
+    return render(request, 'test.html', context)
 
 
 @csrf_exempt
