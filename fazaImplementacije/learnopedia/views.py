@@ -39,8 +39,8 @@ def index(request: HttpRequest):
 
 def makequestions(request: HttpRequest, article_id):
     questionform = QuestionForm(request.POST or None)
-    if( questionform.is_valid()):
-        textquestion=questionform.cleaned_data['Question']
+    if(questionform.is_valid()):
+        textquestion = questionform.cleaned_data['Question']
         answer1 = questionform.cleaned_data['Answer1']
         answer2 = questionform.cleaned_data['Answer2']
         answer3 = questionform.cleaned_data['Answer3']
@@ -52,8 +52,9 @@ def makequestions(request: HttpRequest, article_id):
         questionform = QuestionForm()
     context ={
         'questionform' : questionform,
+        'articleId' : article_id
     }
-    return render(request, 'makequestions.html',context)
+    return render(request, 'makequestions.html', context)
 
 
 def article(request: HttpRequest, article_id): #view for viewing an article
@@ -100,11 +101,10 @@ def articleLike(request: HttpRequest, article_id): #view for liking an article
 
 
 
-def category(request: HttpRequest, category_id):
+def category(request: HttpRequest, category_id): #delete if not used
     return render(request, 'home.html')
 
 def categories(request: HttpRequest):
-
     searchcategory = SearchCategoryForm(request.POST or None)
     if searchcategory.is_valid():
         term = searchcategory.cleaned_data['filter']
@@ -188,6 +188,7 @@ def profile(request: HttpRequest, profile_id): #view for profile - shows basic i
 
     context = {"profile" : profile, "top5Articles" : top5Articles, "top5Categories" : top5Categories}
     return render(request, 'profile.html', context)
+
 def ban(request: HttpRequest, profile_id): #view for banning a user - deletes everything the user ever made (USE WITH CAUTION)
     user = Korisnik.objects.get(pk=profile_id) #delete everything related to this user
 
@@ -367,51 +368,48 @@ def comment(request: HttpRequest, comment_id):
     return render(request, 'comment.html', context)
 
 
-
 @csrf_exempt
 @login_required(login_url='login')
 def kreiraj_article(request: HttpRequest):
-
-    flag=0
+    flag = 0
     title = request.POST.get('naslov')
     kategorije1 = request.POST.getlist('kategorije[]')
     text = request.POST.get('tekst_artikla')
     flag = request.POST.get('flag')
-    add_questions=request.POST.get('add_questions')
+    add_questions = request.POST.get('add_questions')
     kategorije = Category.objects.all()
 
-    
-    last_id=0
-    articles=Article.objects.all()
+    last_id = 0
+    articles = Article.objects.all()
     if articles:
 
         last_article = Article.objects.all().last()
-        last_id=last_article.articleId+1
+        last_id = last_article.articleId + 1
 
     else:
-        last_id=1
-
-
+        last_id = 1
 
     username = None
     if request.user.is_authenticated:
         username = request.user.username
     current_user = request.user
     if flag:
-        clanak=Article.objects.create(title=title,slug=text,isValidated=0,textContent=text,previewPicture="",korisnikId=current_user)
+        clanak = Article.objects.create(title=title, slug=text, isValidated=0, textContent=text, previewPicture="",
+                                        korisnikId=current_user)
         for kat in kategorije1:
-            kategorijap=Category.objects.filter(Q(name__exact=kat))
-            kategorija=kategorijap[0]
-            clanakKategorija=ArticleCategory.objects.create(articleId=clanak,categoryId=kategorija)
+            kategorijap = Category.objects.filter(Q(name__exact=kat))
+            kategorija = kategorijap[0]
+            clanakKategorija = ArticleCategory.objects.create(articleId=clanak, categoryId=kategorija)
             clanakKategorija.save()
         clanak.save()
 
     context = {
         'kategorije': kategorije,
         'last_id': last_id,
-        'flag':add_questions
+        'flag': add_questions
 
     }
 
     return render(request, 'create_article.html', context)
+
 
