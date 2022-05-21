@@ -42,12 +42,13 @@ class QuestionForm(Form):
     #widget =  forms.RadioSelect(choices=TACNI_ODGOVORI)
     choice = forms.ChoiceField(widget=RadioSelect(), choices=[(1, 'Answer1'), (2, 'Answer2'),(3,'Answer3'),(4,'Answer4')])
 
-class Testiranje(Form):
-    answers = forms.ChoiceField(widget=RadioSelect(), choices=[('answer1', ""), ('answer2', ""), ('answer3', ""), ('answer4', "")])
-
-
 class SearchCategoryForm(Form):
     filter = forms.CharField(max_length=50)
 
 
+class Testing(Form):
+    question_text = ""
+    def change(self ,q, a1, a2, a3, a4, name):
+        self.fields[name] = forms.ChoiceField(widget=RadioSelect(), choices=[('answer1', a1), ('answer2', a2), ('answer3', a3), ('answer4', a4)])
+        self.question_text = q
 

@@ -1,7 +1,10 @@
+{% extends 'base.html' %}
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-	<meta charset="UTF-8" />
+    {% load static %}
+    {% block head %}
+    <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
@@ -15,11 +18,7 @@
       integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
       crossorigin="anonymous"
     ></script>
-    <link rel="stylesheet" href="{% static 'questions.css' %}" />
-	<link rel="stylesheet" href="{% static 'home.css' %}" />
-    <script>
-      var promenljiva = false;
-    </script>
+    <link rel="stylesheet" href="{% static 'base.css' %}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -27,113 +26,32 @@
       rel="stylesheet"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="questions.js"></script>
-    <title>Questions</title>
+    <title>Learnopedia</title>
+        <script src="{% static 'testing.js' %}"></script>
+    {% endblock %}
+
 </head>
 <body>
-	<nav class="navbar navbar-expand-sm backgroundDarkBlue">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-          <img src="logo.jpg" alt="Learnopedia" class="logo" />
-        </a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              fill="white"
-              class="bi bi-list"
-              viewBox="0 0 16 16"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"
-              />
-            </svg>
-          </span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Articles</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Login</a>
-            </li>
-          </ul>
-          <form class="d-flex">
-            <input
-              class="form-control me-2"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-            />
-            <button class="btn btn-outline-secondary" type="submit">
-              Search
-            </button>
-          </form>
-        </div>
-      </div>
-    </nav>
+    {% block content %}
 
+        <div class="container mt-sm-5 my-1">
+        <form>
+            {% for question in forms_questions %}
 
+                <div class="question ml-sm-5 pl-sm-5 pt-2">
+                <div class="py-2 h5"><b>{{ question.question_text }}</b></div>
+                <div class="ml-md-3 ml-sm-3 pl-md-5 pt-sm-0 pt-3" id="options">
+                {{ question }}
+                </div>
+                </div>
 
-	<div class="container mt-sm-5 my-1">
-    {% for i in iterator %}
-
-    <div class="question ml-sm-5 pl-sm-5 pt-2">
-        <div class="py-2 h5"><b>{{ questions.i.text }}</b></div>
-        <div class="ml-md-3 ml-sm-3 pl-md-5 pt-sm-0 pt-3" id="options">
-
-            {% for answer in forms_questions.i.answers %}
-                {% if forloop.counter0 == 0 %}
-                <label class="options">{{ questions.i.answer1 }}
-                <span class="radio">{{ choice.tag }}</span>
-                </label>
-                {% endif %}
-                {% if forloop.counter0 == 1 %}
-                <label class="options">{{ questions.i.answer2 }}
-                <span class="radio">{{ choice.tag }}</span>
-                </label>
-                {% endif %}
-                {% if forloop.counter0 == 2 %}
-                <label class="options">{{ questions.i.answer3 }}
-                <span class="radio">{{ choice.tag }}</span>
-                </label>
-                {% endif %}
-                {% if forloop.counter0 == 3 %}
-                <label class="options">{{ questions.i.answer4 }}
-                <span class="radio">{{ choice.tag }}</span>
-                </label>
-                {% endif %}
             {% endfor %}
-
-            <label class="options">Journalist or Activist
-                <input type="radio" name="radio">
-                <span class="checkmark"></span>
-            </label>
-
-            <label class="options">Other
-                <input type="radio" name="radio">
-                <span class="checkmark"></span>
-            </label>
+            <br>
+            <input class="btn btn-light" type="submit" value="Zavrsi"></input>
+        </form>
 
         </div>
-    </div>
-    {% endfor %}
-</div>
-	
+	{% endblock %}
 </body>
 </html>
+

@@ -1,6 +1,6 @@
 
 # Create your views here.
-
+import json
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import *
 from django.http import HttpRequest
@@ -9,6 +9,8 @@ from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required, permission_required
+
 
 def index(request: HttpRequest):
         searchform = SearchForm(request.POST or None)
@@ -121,8 +123,6 @@ def login_req(request: HttpRequest):    #login korisnika
         if user:
             login(request, user)         #uspesno logovanje
             return redirect('home')
-    else:
-        print("Unuccessful login")      #neuspesno logovanje
 
     context = {
         'form': form
@@ -247,28 +247,40 @@ def updateProfile(request: HttpRequest, profile_id): #view for updating a user's
     context = {"profile" : profile, "form": updateForm }
     return render(request, 'updateProfile.html', context)
 
+@login_required(login_url='login')
 def test(request: HttpRequest, article_id):     #testiranje na pitanjima za clanak
-
-    forms_questions = []               #forma za svako pitanje
-    answers_questions = []             #lista liste odgovora za svako pitanje
-    iterator = []
     article = Article.objects.get(pk=article_id)
+    korisnik = Korisnik.objects.get(pk=request.user.id)
+    forms_questions = []               #forma za svako pitanje
     questions = Question.objects.filter(Q(articleId__exact=article_id))   #sva pitanja za izabrani clanak
-    for index in range(len(questions)):
-        forms_questions.append(Testiranje(request.POST or None))     #pravljenje forme za svako pitanje
-        answer1 = questions[index].answer1
-        answer2 = questions[index].answer2
-        answer3 = questions[index].answer3
-        answer4 = questions[index].answer4
-        answers_questions.append([answer1, answer2, answer3, answer4])
-        iterator.append(index)
+    for count,question in enumerate(questions):                 #formiranje svih formi pitanja
+        forms_questions.append(Testing(request.POST or None))
+        forms_questions[count].change(question.text, question.answer1, question.answer2, question.answer3, question.answer4, "q"+str(count))
+
+    '''valid_forms = True
+    for form in forms_questions:     #provera da li su sve forme validne
+        if form.is_valid():
+            continue
+        valid_forms = False
+        break'''
+
+    points = 0
+    #if valid_forms:
+    if request.method == 'POST':
+        for count,question in enumerate(questions):   #racunanje broja osvojenih poena
+            choice = int(forms_questions[count].cleaned_data["a"+str(count)])
+            print(choice)
+            if question.correct == choice:
+                points += question.points
+        newGrade = KorisnikArticleGrade.objects.create(articleId=article, korisnikId=korisnik, grade=points)    #upisivanje ocene korisnika na artiklu
+        newGrade.save()
+
+        return redirect('article', article_id)
+
 
 
     context = {
-        'questions': questions,
-        'answers_questions': answers_questions,
         'forms_questions': forms_questions,
-        'iterator': iterator
     }
     return render(request, 'questions.html', context)
 
