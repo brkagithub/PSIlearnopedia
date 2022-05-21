@@ -37,5 +37,6 @@ urlpatterns = [
     path('makequestions/<int:article_id>',makequestions, name='makequestion'),
     path('test/<int:article_id>', test, name="test"),
     path('create_article/makequestions/<int:article_id>',makequestions, name='makequestion'),
-    path('comment/<int:article_id>', comment, name='comment')
+    path('makecomment/<int:article_id>', makecomment, name='makecomment'),
+    path('comment/<int:comment_id>', comment, name='comment')
 ]

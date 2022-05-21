@@ -47,7 +47,7 @@
                   >
               {% endif %}
 
-              <a href={% url 'comment' article.articleId %}
+              <a href={% url 'makecomment' article.articleId %}
                     ><button class="btn btn-light">Comment</button></a
                   >
 
@@ -112,6 +112,12 @@
                 {% endif %}
             {% endif %}
         </div>
+
+
+
+
+
+
       </div>
     {% endblock %}
   </body>

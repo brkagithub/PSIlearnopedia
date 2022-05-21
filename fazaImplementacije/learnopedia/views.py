@@ -58,6 +58,7 @@ def makequestions(request: HttpRequest, article_id):
 
 def article(request: HttpRequest, article_id): #view for viewing an article
     article = Article.objects.get(pk=article_id)
+    comments = Comment.objects.filter(articleId__exact=article_id)
 
     articlesFromAuthor = Article.objects.filter(korisnikId__exact=article.korisnikId).order_by('-numOfLikes') #we sort it by likes
 
@@ -80,7 +81,7 @@ def article(request: HttpRequest, article_id): #view for viewing an article
     if request.user.is_authenticated:
         userLiked = KorisnikLikedArticle.objects.filter(korisnikId__exact=request.user).filter(articleId__exact=article_id).count() > 0
 
-    context = {"article" : article, "totalLikes": totalLikes, "categoriesToShow" : categoriesToShow, "threeArticles" : threeArticles, "userLiked" : userLiked}
+    context = {"article" : article, "totalLikes": totalLikes, "categoriesToShow" : categoriesToShow, "threeArticles" : threeArticles, "userLiked" : userLiked, "comments": comments}
 
     return render(request, 'article.html', context)
 
@@ -300,23 +301,67 @@ def test(request: HttpRequest, article_id):     #testiranje na pitanjima za clan
     return render(request, 'test.html', context)
 
 
-
 @login_required(login_url='login')
-def comment(request: HttpRequest, article_id):
-    comment_form = CommentForm(request.POST or None)
-    for field in comment_form:
-        print("Field Error:", field.name, field.errors)
+def makecomment(request: HttpRequest, article_id):
+    comment_form = CommentForm(request.POST or None)        #creating form to write comment
+
     if comment_form.is_valid():
-        text = comment_form.cleaned_data['text']
+        text = comment_form.cleaned_data['text']             #getting text of the comment
         article = Article.objects.get(pk=article_id)
         korisnik = request.user
         newComment = Comment.objects.create(articleId=article, korisnikId=korisnik, text=text)
-        newComment.save()
+        newComment.save()                   #saving th comment
 
         return redirect('article', article_id)
 
     context = {
-        "comment_form": comment_form
+        "comment_form": comment_form,
+        "article_id": article_id
+    }
+
+    return render(request, 'makecomment.html', context)
+
+
+@login_required(login_url='login')
+def makecomment(request: HttpRequest, article_id):
+    comment_form = CommentForm(request.POST or None)        #creating form to write comment
+
+    if comment_form.is_valid():
+        text = comment_form.cleaned_data['text']             #getting text of the comment
+        article = Article.objects.get(pk=article_id)
+        korisnik = request.user
+        newComment = Comment.objects.create(articleId=article, korisnikId=korisnik, text=text)
+        newComment.save()                   #saving  comment
+
+        return redirect('article', article_id)
+
+    context = {
+        "comment_form": comment_form,
+        "article_id": article_id
+    }
+    return render(request, 'makecomment.html', context)
+
+
+@login_required(login_url='login')      #nije zavrsen
+def comment(request: HttpRequest, comment_id):
+    comment_form = CommentForm(request.POST or None)        #creating form to write comment
+    korisnik = request.user
+    comment = Comment.objects.get(pk=comment_id)
+    article = Article.objects.get(pk=comment.articleId.articleId)
+    article_id = article.article_id
+
+    if comment_form.is_valid():
+        text = comment_form.cleaned_data['text']             #getting text of the comment
+        korisnik = request.user
+        newComment = Comment.objects.create(articleId=article, korisnikId=korisnik, text=text)
+        newComment.save()                   #saving  comment
+        comment.delete()                    #deleting old comment
+
+
+    context = {
+        "comment_form": comment_form,
+        "comment_id": comment_id,
+        "article_id": article_id,
     }
 
     return render(request, 'comment.html', context)
