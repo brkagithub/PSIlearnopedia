@@ -46,6 +46,6 @@ class SearchCategoryForm(Form):
 class Testing(Form):
     question_text = ""
     def change(self ,q, a1, a2, a3, a4, name):
-        self.fields[name] = forms.ChoiceField(widget=RadioSelect(), choices=[('answer1', a1), ('answer2', a2), ('answer3', a3), ('answer4', a4)])
+        self.fields[name] = forms.ChoiceField(widget=RadioSelect(), choices=[('1', a1), ('2', a2), ('3', a3), ('4', a4)])
         self.question_text = q
 

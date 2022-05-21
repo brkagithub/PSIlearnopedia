@@ -38,7 +38,7 @@
           </div>
           {% if user.is_authenticated %}
               {% if article.korisnikId != user %}
-                  <a href="questions.html"
+                  <a href={% url 'test' article.articleId %}
                     ><button class="btn btn-light">Test yourself</button></a
                   >
               {% else %}

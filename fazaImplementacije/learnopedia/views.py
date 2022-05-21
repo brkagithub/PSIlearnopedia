@@ -253,29 +253,29 @@ def test(request: HttpRequest, article_id):     #testiranje na pitanjima za clan
     korisnik = Korisnik.objects.get(pk=request.user.id)
     forms_questions = []               #forma za svako pitanje
     questions = Question.objects.filter(Q(articleId__exact=article_id))   #sva pitanja za izabrani clanak
-    for count,question in enumerate(questions):                 #formiranje svih formi pitanja
+    for count, question in enumerate(questions):                 #formiranje svih formi pitanja
         forms_questions.append(Testing(request.POST or None))
         forms_questions[count].change(question.text, question.answer1, question.answer2, question.answer3, question.answer4, "q"+str(count))
 
-    '''valid_forms = True
+    valid_forms = True
     for form in forms_questions:     #provera da li su sve forme validne
         if form.is_valid():
             continue
         valid_forms = False
-        break'''
+        break
 
     points = 0
-    #if valid_forms:
-    if request.method == 'POST':
-        for count,question in enumerate(questions):   #racunanje broja osvojenih poena
-            choice = int(forms_questions[count].cleaned_data["a"+str(count)])
-            print(choice)
-            if question.correct == choice:
-                points += question.points
-        newGrade = KorisnikArticleGrade.objects.create(articleId=article, korisnikId=korisnik, grade=points)    #upisivanje ocene korisnika na artiklu
-        newGrade.save()
+    if valid_forms:
+        if request.method == 'POST':
+            for count, question in enumerate(questions):   #racunanje broja osvojenih poena
+                choice = int(forms_questions[count].cleaned_data["q"+str(count)])
+                print(choice)
+                if question.correct == choice:
+                    points += question.points
+            newGrade = KorisnikArticleGrade.objects.create(articleId=article, korisnikId=korisnik, grade=points)    #upisivanje ocene korisnika na artiklu
+            newGrade.save()
 
-        return redirect('article', article_id)
+            return redirect('article', article_id)
 
 
 
