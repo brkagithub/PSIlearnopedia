@@ -17,7 +17,6 @@ class KorisnikCreationForm(UserCreationForm):
         fields = ['username', 'password1', 'password2', 'first_name', 'last_name', 'description']
 
 
-
 class SearchForm(Form):
     filter = forms.CharField(max_length=50)
 

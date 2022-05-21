@@ -1,6 +1,10 @@
 
 # Create your views here.
+
 import json
+
+from django.contrib.auth.decorators import login_required
+
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import *
 from django.http import HttpRequest
@@ -294,14 +298,22 @@ def kreiraj_article(request: HttpRequest):
     kategorije1 = request.POST.getlist('kategorije[]')
     text = request.POST.get('tekst_artikla')
     flag = request.POST.get('flag')
+    add_questions=request.POST.get('add_questions')
     kategorije = Category.objects.all()
-    last_article=Article.objects.all().reverse()
-    #lastArticle=last_article[0]
-    context = {
-                'kategorije':kategorije,
-                'last_id': 0
 
-    }
+    
+    last_id=0
+    articles=Article.objects.all()
+    if articles:
+
+        last_article = Article.objects.all().last()
+        last_id=last_article.articleId+1
+
+    else:
+        last_id=1
+
+
+
     username = None
     if request.user.is_authenticated:
         username = request.user.username
@@ -314,12 +326,13 @@ def kreiraj_article(request: HttpRequest):
             clanakKategorija=ArticleCategory.objects.create(articleId=clanak,categoryId=kategorija)
             clanakKategorija.save()
         clanak.save()
-        print(clanak.articleId)
-        return redirect('article',clanak.articleId)
-        #return render(request,'home.html')
 
+    context = {
+        'kategorije': kategorije,
+        'last_id': last_id,
+        'flag':add_questions
 
-
+    }
 
     return render(request, 'create_article.html', context)
 

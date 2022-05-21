@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from .views import *
+from django.urls import include
 
 urlpatterns = [
     path('', index, name="home"),
@@ -34,6 +35,8 @@ urlpatterns = [
     path('<int:article_id>/deleteCategory/<int:category_id>', deleteCategory, name='deleteCategory'),
     path('updateProfile/<int:profile_id>', updateProfile, name="updateProfile"),
     path('makequestions/<int:article_id>',makequestions, name='makequestion'),
-    path('test/<int:article_id>', test, name="test")
+    path('test/<int:article_id>', test, name="test"),
+    path('create_article/makequestions/<int:article_id>',makequestions, name='makequestion'),
+
 
 ]
