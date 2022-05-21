@@ -31,7 +31,7 @@
   </head>
   <body>
     <div class="container-fluid backgroundDarkBlue">
-{% block navbar %}
+        {% block navbar %}
         {% if user.is_authenticated %}
         <nav class="navbar navbar-expand-sm backgroundDarkBlue">
         <a class="navbar-brand" href={% url 'home' %}>
@@ -75,7 +75,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="write.html">Write</a>
+              <a class="nav-link" href={% url 'create_article' %}>Write</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href={% url 'profile' user.id %}>Profile</a>

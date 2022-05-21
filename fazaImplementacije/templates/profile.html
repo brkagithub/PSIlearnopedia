@@ -55,7 +55,7 @@
         <div id="popularArticles" class="col-12 col-md-6">
           <h2 class="textAlign mt-3 mb-3">My popular articles</h2>
           {% for article in top5Articles %}
-              <a href="${article.slug}.html" class="linkNoDeco cardArticles">
+              <a href={% url 'article' article.articleId %} class="linkNoDeco cardArticles">
                 <div class="card card200px" style="width: 100%">
                     <div class="card-body flexBody">
                         <div>

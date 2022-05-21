@@ -296,10 +296,10 @@ def kreiraj_article(request: HttpRequest):
     flag = request.POST.get('flag')
     kategorije = Category.objects.all()
     last_article=Article.objects.all().reverse()
-    lastArticle=last_article[0]
+    #lastArticle=last_article[0]
     context = {
                 'kategorije':kategorije,
-                'last_id':lastArticle.articleId
+                'last_id': 0
 
     }
     username = None
