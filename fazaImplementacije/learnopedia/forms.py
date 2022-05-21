@@ -21,6 +21,12 @@ class SearchForm(Form):
     filter = forms.CharField(max_length=50)
 
 
+class CommentForm(ModelForm):
+
+    class Meta:
+        model = Comment
+        fields = ['text']
+
 
 class UpdateUserForm(Form):
     username = forms.CharField(max_length=50, label="Username")

@@ -46,6 +46,11 @@
                     ><button class="btn btn-light">Make questions</button></a
                   >
               {% endif %}
+
+              <a href={% url 'comment' article.articleId %}
+                    ><button class="btn btn-light">Comment</button></a
+                  >
+
           {% endif %}
           <div class="flexWrap marginLR60">
             <div id="categories" class="flexCenter mt-2 textAlign">

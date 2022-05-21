@@ -300,6 +300,29 @@ def test(request: HttpRequest, article_id):     #testiranje na pitanjima za clan
     return render(request, 'test.html', context)
 
 
+
+@login_required(login_url='login')
+def comment(request: HttpRequest, article_id):
+    comment_form = CommentForm(request.POST or None)
+    for field in comment_form:
+        print("Field Error:", field.name, field.errors)
+    if comment_form.is_valid():
+        text = comment_form.cleaned_data['text']
+        article = Article.objects.get(pk=article_id)
+        korisnik = request.user
+        newComment = Comment.objects.create(articleId=article, korisnikId=korisnik, text=text)
+        newComment.save()
+
+        return redirect('article', article_id)
+
+    context = {
+        "comment_form": comment_form
+    }
+
+    return render(request, 'comment.html', context)
+
+
+
 @csrf_exempt
 @login_required(login_url='login')
 def kreiraj_article(request: HttpRequest):
