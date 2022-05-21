@@ -18,9 +18,6 @@ class KorisnikCreationForm(UserCreationForm):
 
 
 
-
-
-
 class SearchForm(Form):
     filter = forms.CharField(max_length=50)
 
