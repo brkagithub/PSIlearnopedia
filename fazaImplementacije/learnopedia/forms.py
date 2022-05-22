@@ -36,6 +36,7 @@ class UpdateUserForm(Form):
 
 
 class QuestionUpdateForm(Form):
+    Points = forms.IntegerField()
     Question = forms.CharField(max_length=50)
     Answer1 = forms.CharField(max_length=50)
     Answer2 = forms.CharField(max_length=50)
@@ -51,6 +52,7 @@ class QuestionUpdateForm(Form):
 
 
 class QuestionForm(Form):
+    Points = forms.IntegerField()
     Question = forms.CharField(max_length=50)
     Answer1 = forms.CharField(max_length=50)
     Answer2 = forms.CharField(max_length=50)

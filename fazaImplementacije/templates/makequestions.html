@@ -56,22 +56,22 @@
                             {% for choice in questionform.choice %}
                                 <tr>
                                 {% if forloop.counter0 == 0 %}
-                                    <td>Answer1</td>
+                                    <td><h6>Answer1</h6></td>
                                     <td> {{ questionform.Answer1 }}</td>
                                     <td>{{ choice }}</td>
                                 {% endif %}
                                 {% if forloop.counter0 == 1 %}
-                                    <td>Answer2</td>
+                                    <td><h6>Answer2</h6></td>
                                     <td> {{ questionform.Answer2 }}</td>
                                     <td>{{ choice }}</td>
                                 {% endif %}
                                 {% if forloop.counter0 == 2  %}
-                                    <td>Answer3</td>
+                                    <td><h6>Answer3</h6></td>
                                     <td> {{ questionform.Answer3 }}</td>
                                     <td>{{ choice }}</td>
                                 {% endif %}
                                 {% if forloop.counter0 == 3 %}
-                                    <td>Answer4</td>
+                                    <td><h6>Answer4</h6></td>
                                     <td> {{ questionform.Answer4 }}</td>
                                     <td>{{ choice }}</td>
                                 {% endif %}
@@ -82,6 +82,10 @@
 
                 </div>
             </div>
+            <div>
+                <h5>Points</h5>  {{questionform.Points}}
+            </div>
+            <br>
                 <input type="submit" value="Next Question" name="makequestion" class="btn btn-info" style="float: right">
                 <input type="submit" value="Finish" name="makequestion" class="btn btn-success" style="float: right">
                 <a href={% url 'article' articleId %}><div class="btn btn-light">Cancel</div></a>

@@ -43,7 +43,6 @@ def UpdateQuestions(request:HttpRequest, article_id):
     global cnt
     if( request.method == 'GET'):
         cnt = 0
-        print(cnt)
     if( request.method == 'POST'):
 
         if updateform.is_valid():
@@ -53,20 +52,21 @@ def UpdateQuestions(request:HttpRequest, article_id):
             answer3 = updateform.cleaned_data['Answer3']
             answer4 = updateform.cleaned_data['Answer4']
             choice = int(updateform.cleaned_data['choice'])
+            points = updateform.cleaned_data['Points']
             article = Article.objects.get(articleId=article_id)
             question = Question.objects.filter(articleId=article_id)[cnt]
             question.answer1 = answer1; question.answer3 = answer3
             question.answer2 = answer2; question.answer4 = answer4
             question.text= textquestion; question.correct = choice
-            print(question)
+            question.points=points
             question.save()
             cnt = cnt + 1
-            print(cnt)
+
     if(Question.objects.filter(articleId=article_id).count() > cnt):
         question = Question.objects.filter(articleId=article_id)[cnt]
         a1 = question.answer1; a2 = question.answer2; a3 = question.answer3; a4 = question.answer4;
-        q = question.text;  odgovor = question.correct;
-        updateform = QuestionUpdateForm(initial= {'Question':q,'Answer1':a1,'Answer2':a2,'Answer3':a3,'Answer4':a4,'choice': odgovor})
+        q = question.text;  odgovor = question.correct; points = question.points
+        updateform = QuestionUpdateForm(initial= {'Question':q,'Answer1':a1,'Answer2':a2,'Answer3':a3,'Answer4':a4,'choice': odgovor, 'points':points})
     else:
         updateform = QuestionUpdateForm()
     context = {
@@ -85,9 +85,10 @@ def makequestions(request: HttpRequest, article_id):
         answer2 = questionform.cleaned_data['Answer2']
         answer3 = questionform.cleaned_data['Answer3']
         answer4 = questionform.cleaned_data['Answer4']
+        points  = questionform.cleaned_data['Points']
         choice = int(questionform.cleaned_data['choice'])
         article= Article.objects.get(articleId=article_id)
-        question = Question(correct=choice,answer1=answer1,answer2=answer2,answer3=answer3,answer4=answer4,articleId=article,text=textquestion,points=0)
+        question = Question(correct=choice,answer1=answer1,answer2=answer2,answer3=answer3,answer4=answer4,articleId=article,text=textquestion,points=points)
         question.save()
         questionform = QuestionForm()
 
