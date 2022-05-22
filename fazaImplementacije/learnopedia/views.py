@@ -37,6 +37,10 @@ def index(request: HttpRequest):
         }
         return render(request, 'home.html', context)
 
+def category(request: HttpRequest, category_id): #delete if not used
+    return render(request, 'home.html')
+
+
 cnt=0
 def UpdateQuestions(request:HttpRequest, article_id):
     updateform = QuestionUpdateForm(request.POST or None)
