@@ -33,8 +33,11 @@
           <h1 id="title">
               {{ article.title }}
           </h1>
-          <div id="content" class="marginLR60">
-              {{ article.textContent }}
+          <div id="content" class="marginLR60" >
+
+                <div id="sakriven" style="display: none;">{{ article.textContent }}</div>
+                <div id="sadrzaj"></div>
+
           </div>
           {% if user.is_authenticated %}
               {% if article.korisnikId != user %}

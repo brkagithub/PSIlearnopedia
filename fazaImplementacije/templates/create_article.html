@@ -42,35 +42,27 @@
 </head>
 <body>
     {% block content %}
+    <form action="" method="POST">
 
-    Title:<input type="text" style="margin: 20px;" id="naslov">
-    <br><span class="greska" id="naslovGreska" style="color: red"></span>
-
-    <div id="summernote"></div>
-    <script>
-      $('#summernote').summernote({
-        placeholder: 'Write your article here',
-        tabsize: 2,
-        height: 500
-      });
-    </script>
-    <br><span class="greska" id="textGreska" style="color: red"></span><br>
+        {% csrf_token %}
+        Title:        {{ form.title }}
+        <br>
+        <br>
+        <span class="greska" id="naslovGreska" style="color: red"></span>
 
 
+        {{ form.content }}
 
-    {% for category in kategorije %}
-        <input type="checkbox" id={{ category.name}} name="type" value={{ category.name}}>
-        <label for={{ category.name}}> {{ category.name}}</label>
+        <br><span class="greska" id="textGreska" style="color: red; height: 10px;"></span><br>
 
-
-    {% endfor %}
-    <br><span class="greska" id="kategorijeGreska" style="color: red"></span><br>
-
-     <button id="kraj" type="submit" class="btn btn-primary">Create</button>
-
-    <!--<button type="button" class="btn btn-primary" id={{ last_id }} name="pitanje" disabled>Add questions</button>-->
+        {{ form.letters }}
 
 
+        <br><span class="greska" id="kategorijeGreska" style="color: red"></span><br>
+
+        <input type="submit" value="Create article">
+
+    </form>
 
     {% endblock %}
 </body>
