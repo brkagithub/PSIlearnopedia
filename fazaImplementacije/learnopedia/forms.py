@@ -3,7 +3,7 @@ from .models import *
 from django import forms
 
 from django.forms import ModelForm, Form, RadioSelect
-
+from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
 
 
 from django.forms import ModelForm,Form
@@ -70,4 +70,21 @@ class Testing(Form):
     def change(self ,q, a1, a2, a3, a4, name):
         self.fields[name] = forms.ChoiceField(widget=RadioSelect(), choices=[('1', a1), ('2', a2), ('3', a3), ('4', a4)])
         self.question_text = q
+
+class createArticle(Form):
+    title=forms.CharField(max_length=50,required=True)
+    content = forms.CharField(widget=SummernoteWidget(),required=True)
+    #letters = forms.MultipleChoiceField()
+    def f(self, kategorije):
+        choices = list()
+
+        for kat in kategorije:
+
+            choices.append((kat.categoryId,kat.name))
+            
+        self.fields["letters"] = forms.MultipleChoiceField(choices=choices,label="kurac",required=False,widget = forms.CheckboxSelectMultiple)
+
+
+
+
 

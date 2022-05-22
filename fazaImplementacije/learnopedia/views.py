@@ -430,44 +430,33 @@ def comment(request: HttpRequest, comment_id):
 @csrf_exempt
 @login_required(login_url='login')
 def kreiraj_article(request: HttpRequest):
-    flag = 0
-    title = request.POST.get('naslov')
-    kategorije1 = request.POST.getlist('kategorije[]')
-    text = request.POST.get('tekst_artikla')
-    flag = request.POST.get('flag')
-    add_questions = request.POST.get('add_questions')
+
+
+    form=createArticle(request.POST or None)
     kategorije = Category.objects.all()
+    form.f(kategorije)
+    print("kurac1")
+    if form.is_valid():
+        naslov=form.cleaned_data['title']
+        tekst=form.cleaned_data['content']
+        kat=form.cleaned_data['letters']
 
-    last_id = 0
-    articles = Article.objects.all()
-    if articles:
-
-        last_article = Article.objects.all().last()
-        last_id = last_article.articleId + 1
-
-    else:
-        last_id = 1
-
-    username = None
-    if request.user.is_authenticated:
-        username = request.user.username
-    current_user = request.user
-    if flag:
-        clanak = Article.objects.create(title=title, slug=text, isValidated=0, textContent=text, previewPicture="",
-                                        korisnikId=current_user)
-        for kat in kategorije1:
-            kategorijap = Category.objects.filter(Q(name__exact=kat))
-            kategorija = kategorijap[0]
-            clanakKategorija = ArticleCategory.objects.create(articleId=clanak, categoryId=kategorija)
-            clanakKategorija.save()
+        current_user = request.user
+        clanak = Article.objects.create(title=naslov, slug=naslov, isValidated=0, textContent=tekst, previewPicture="",korisnikId=current_user)
         clanak.save()
+        for k in kat:
+            print(k)
+            clanakKategorija = ArticleCategory.objects.create(articleId=clanak, categoryId=Category.objects.get(pk=k))
+            clanakKategorija.save()
+        return redirect('makequestion', clanak.articleId)
+
+
 
     context = {
-        'kategorije': kategorije,
-        'last_id': last_id,
-        'flag': add_questions
-
+        'form': form,
     }
+
+
 
     return render(request, 'create_article.html', context)
 

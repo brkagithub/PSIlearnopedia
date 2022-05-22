@@ -1,4 +1,4 @@
-
+/*
 function resetujGreske(){
 	document.getElementById("naslovGreska").innerHTML="";
 	document.getElementById("textGreska").innerHTML="";
@@ -100,4 +100,4 @@ $(document).ready(function(){
 
 
 
-});
+});*/

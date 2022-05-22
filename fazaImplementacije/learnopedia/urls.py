@@ -17,6 +17,10 @@ from django.contrib import admin
 from django.urls import path
 from .views import *
 from django.urls import include
+from django.conf import settings
+from django.conf.urls.static import static
+
+
 
 urlpatterns = [
     path('', index, name="home"),
@@ -39,4 +43,8 @@ urlpatterns = [
     path('makecomment/<int:article_id>', makecomment, name='makecomment'),
     path('comment/<int:comment_id>', comment, name='comment'),
     path('questionUpdate/<int:article_id>', UpdateQuestions, name='questionUpdate'),
+    path('summernote/', include('django_summernote.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
