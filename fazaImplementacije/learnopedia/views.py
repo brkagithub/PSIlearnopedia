@@ -37,12 +37,28 @@ def index(request: HttpRequest):
         }
         return render(request, 'home.html', context)
 
-def category(request: HttpRequest, category_id): #delete if not used
-    return render(request, 'home.html')
+def category(request: HttpRequest, category_id):
+    articles = []
+    ArticlesWithCategory = ArticleCategory.objects.filter(categoryId=category_id)
+    for ArticleWithCategory in ArticlesWithCategory:
+        articles.append(ArticleWithCategory.articleId)
+    searchform = SearchForm()
+    context = {
+        'searchform': searchform,
+        'articles': articles
+    }
+    return render(request, 'home.html',context)
 
 
 cnt=0
+@login_required(login_url='login')
 def UpdateQuestions(request:HttpRequest, article_id):
+    korisnik_current = request.user
+    article = Article.objects.get(articleId=article_id)
+    owner = Korisnik.objects.get(pk=article.korisnikId.pk)
+    if (
+            owner.pk != korisnik_current.pk and korisnik_current.isModerator == 0 and korisnik_current.isAdministrator == 0):
+        return redirect('home')
     updateform = QuestionUpdateForm(request.POST or None)
     global cnt
     if( request.method == 'GET'):
@@ -293,6 +309,7 @@ def deleteCategory(request: HttpRequest, article_id, category_id): #view for del
 
 @login_required(login_url='login')
 def updateProfile(request: HttpRequest, profile_id): #view for updating a user's profile
+
     profile = Korisnik.objects.get(pk=profile_id)
 
     updateForm = UpdateUserForm(request.POST or None)
