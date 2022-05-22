@@ -88,7 +88,7 @@ $(document).ready(function(){
 			document.getElementById("kategorijeGreska").innerHTML="Niste izabrali kategoriju";
 		}
 		else {
-			//window.location.pathname = 'makequestions' + "/" + id;
+			window.location.pathname = 'makequestions' + "/" + id;
 		}
 
 

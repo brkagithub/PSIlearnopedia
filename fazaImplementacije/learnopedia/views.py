@@ -98,6 +98,13 @@ def UpdateQuestions(request:HttpRequest, article_id):
 
 @login_required(login_url='login')
 def makequestions(request: HttpRequest, article_id):
+    korisnik_current = request.user
+    article = Article.objects.get(articleId=article_id)
+    owner = Korisnik.objects.get(pk=article.korisnikId.pk)
+    if(owner.pk != korisnik_current.pk and korisnik_current.isModerator==0 and korisnik_current.isAdministrator==0):   # proverava da li je trenutni user stvarno vlasnik artikla, ili moderator ili admin
+        return redirect('home')
+
+
     questionform = QuestionForm(request.POST or None)
     if(questionform.is_valid()):
         textquestion = questionform.cleaned_data['Question']
@@ -109,6 +116,7 @@ def makequestions(request: HttpRequest, article_id):
         choice = int(questionform.cleaned_data['choice'])
         article= Article.objects.get(articleId=article_id)
         question = Question(correct=choice,answer1=answer1,answer2=answer2,answer3=answer3,answer4=answer4,articleId=article,text=textquestion,points=points)
+
         question.save()
         questionform = QuestionForm()
 
@@ -211,9 +219,6 @@ def registration(request: HttpRequest):       #register korisnik
         user:Korisnik = form.save()          #adding korisnik to database
         login(request, user)                 #login newest korisnik
         return redirect('home')
-    else:
-        for field in form:
-            print("Field Error:", field.name, field.errors)
 
     context = {
         'form': form
@@ -258,6 +263,10 @@ def profile(request: HttpRequest, profile_id): #view for profile - shows basic i
 
 @login_required(login_url='login')
 def ban(request: HttpRequest, profile_id): #view for banning a user - deletes everything the user ever made (USE WITH CAUTION)
+    korisnik_current = request.user
+    if (korisnik_current.isModerator==0 and korisnik_current.isAdministrator==0):              #provera da li je administrator ili moderator
+        return redirect('home')
+
     user = Korisnik.objects.get(pk=profile_id) #delete everything related to this user
 
     for article in Article.objects.filter(korisnikId__exact=profile_id):
@@ -278,7 +287,13 @@ def ban(request: HttpRequest, profile_id): #view for banning a user - deletes ev
 
 @login_required(login_url='login')
 def deleteArticle(request: HttpRequest, article_id): #view for deleting an article - deletes everything related to it too
+    korisnik_current = request.user
     article = Article.objects.get(pk=article_id)
+    owner = Korisnik.objects.get(pk=article.korisnikId.pk)
+    if (owner.pk != korisnik_current.pk and korisnik_current.isModerator == 0 and korisnik_current.isAdministrator == 0):      # proverava da li je trenutni user stvarno vlasnik artikla, ili moderator ili admin
+        return redirect('home')
+
+
     for articleCategory in ArticleCategory.objects.filter(articleId__exact=article):
         articleCategory.delete()
     for articleGrade in KorisnikArticleGrade.objects.filter(articleId__exact=article):
@@ -294,6 +309,10 @@ def deleteArticle(request: HttpRequest, article_id): #view for deleting an artic
 
 @login_required(login_url='login')
 def validateArticle(request: HttpRequest, article_id): #view for approving an article by a moderator
+    korisnik_current = request.user
+    if (korisnik_current.isModerator == 0 and korisnik_current.isAdministrator == 0):  # provera da li je administrator ili moderator
+        return redirect('home')
+
     article = Article.objects.get(pk=article_id)
     article.isValidated=1
     article.save()
@@ -301,7 +320,12 @@ def validateArticle(request: HttpRequest, article_id): #view for approving an ar
 
 @login_required(login_url='login')
 def deleteCategory(request: HttpRequest, article_id, category_id): #view for deleting a category from an article
-    article = Article.objects.get(pk=article_id)
+    korisnik_current = request.user
+    article = Article.objects.get(articleId=article_id)
+    owner = Korisnik.objects.get(pk=article.korisnikId.pk)
+    if (owner.pk != korisnik_current.pk and korisnik_current.isModerator == 0 and korisnik_current.isAdministrator == 0):  # proverava da li je trenutni user stvarno vlasnik artikla, ili moderator ili admin
+        return redirect('home')
+
     category = Category.objects.get(pk=category_id)
     articleCategory = ArticleCategory.objects.filter(articleId__exact=article).filter(categoryId__exact=category)
     articleCategory.delete()
@@ -309,8 +333,10 @@ def deleteCategory(request: HttpRequest, article_id, category_id): #view for del
 
 @login_required(login_url='login')
 def updateProfile(request: HttpRequest, profile_id): #view for updating a user's profile
-
+    korisnik_current = request.user
     profile = Korisnik.objects.get(pk=profile_id)
+    if (profile.pk != korisnik_current.pk and korisnik_current.isModerator == 0 and korisnik_current.isAdministrator == 0):  # proverava da li je trenutni user stvarno vlasnik artikla, ili moderator ili admin
+        return redirect('home')
 
     updateForm = UpdateUserForm(request.POST or None)
 
