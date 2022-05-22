@@ -51,6 +51,12 @@ def makequestions(request: HttpRequest, article_id):
         question = Question(correct=choice,answer1=answer1,answer2=answer2,answer3=answer3,answer4=answer4,articleId=article,text=textquestion,points=0)
         question.save()
         questionform = QuestionForm()
+
+        button = request.POST.get("makequestion")
+        if button == 'Finish':                          #if finished making questions go to article
+            return redirect('article', article_id)
+
+
     context ={
         'questionform' : questionform,
         'articleId' : article_id
