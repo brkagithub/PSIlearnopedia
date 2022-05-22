@@ -35,6 +35,21 @@ class UpdateUserForm(Form):
     description = forms.CharField(widget=forms.Textarea, label="Description")
 
 
+class QuestionUpdateForm(Form):
+    Question = forms.CharField(max_length=50)
+    Answer1 = forms.CharField(max_length=50)
+    Answer2 = forms.CharField(max_length=50)
+    Answer3 = forms.CharField(max_length=50)
+    Answer4 = forms.CharField(max_length=50)
+    choice = forms.ChoiceField(widget=RadioSelect(),choices=[(1, 'Answer1'), (2, 'Answer2'), (3, 'Answer3'), (4, 'Answer4')])
+
+    def put(self, q, a1, a2, a3, a4,odgovor):
+        self.Question = q
+        self.Answer1 = a1;self.Answer2 = a1;self.Answer3 = a1;self.Answer4 = a1;
+        answer = 'Answer'+str(odgovor)
+        print(answer)
+
+
 class QuestionForm(Form):
     Question = forms.CharField(max_length=50)
     Answer1 = forms.CharField(max_length=50)

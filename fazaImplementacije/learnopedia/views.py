@@ -37,6 +37,45 @@ def index(request: HttpRequest):
         }
         return render(request, 'home.html', context)
 
+cnt=0
+def UpdateQuestions(request:HttpRequest, article_id):
+    updateform = QuestionUpdateForm(request.POST or None)
+    global cnt
+    if( request.method == 'GET'):
+        cnt = 0
+        print(cnt)
+    if( request.method == 'POST'):
+
+        if updateform.is_valid():
+            textquestion = updateform.cleaned_data['Question']
+            answer1 = updateform.cleaned_data['Answer1']
+            answer2 = updateform.cleaned_data['Answer2']
+            answer3 = updateform.cleaned_data['Answer3']
+            answer4 = updateform.cleaned_data['Answer4']
+            choice = int(updateform.cleaned_data['choice'])
+            article = Article.objects.get(articleId=article_id)
+            question = Question.objects.filter(articleId=article_id)[cnt]
+            question.answer1 = answer1; question.answer3 = answer3
+            question.answer2 = answer2; question.answer4 = answer4
+            question.text= textquestion; question.correct = choice
+            print(question)
+            question.save()
+            cnt = cnt + 1
+            print(cnt)
+    if(Question.objects.filter(articleId=article_id).count() > cnt):
+        question = Question.objects.filter(articleId=article_id)[cnt]
+        a1 = question.answer1; a2 = question.answer2; a3 = question.answer3; a4 = question.answer4;
+        q = question.text;  odgovor = question.correct;
+        updateform = QuestionUpdateForm(initial= {'Question':q,'Answer1':a1,'Answer2':a2,'Answer3':a3,'Answer4':a4,'choice': odgovor})
+    else:
+        updateform = QuestionUpdateForm()
+    context = {
+        'updateForm': updateform,
+    }
+    return render(request, 'questionUpdate.html', context)
+
+
+
 @login_required(login_url='login')
 def makequestions(request: HttpRequest, article_id):
     questionform = QuestionForm(request.POST or None)
@@ -109,9 +148,6 @@ def articleLike(request: HttpRequest, article_id): #view for liking an article
     return redirect('article', article_id)
 
 
-
-def category(request: HttpRequest, category_id): #delete if not used
-    return render(request, 'home.html')
 
 def categories(request: HttpRequest):
     searchcategory = SearchCategoryForm(request.POST or None)
