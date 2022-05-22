@@ -27,12 +27,11 @@
 
         <br>
 
-        <form method="POST" action="{% url 'article' article_id %}">
-                {% csrf_token %}
-                <input class="btn btn-danger" type="submit" value="Cancel"></input>
-            </form>
-
+        <a href="{% url 'article' article_id %}"  class="linkNoDeco">
+            <input class="btn btn-danger" type="submit" value="Cancel"></input>
+        </a>
         </div>
+
 	{% endblock %}
 </body>
 </html>

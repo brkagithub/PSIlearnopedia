@@ -1,21 +1,26 @@
 {% extends 'base.html' %}
-<!doctype html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns="http://www.w3.org/1999/html" style="height: 100%">
 <head>
     {% load static %}
 
 </head>
-<body>
+<body style="min-height: 100%">
+
     {% block content %}
+
+        <div style="height: 100% !important">
+
         <br>
         <b>Cestitamo na {{ grade }}% na artiklu {{ article_title }}</b>
 
         <br>
-        <form method="POST" action="{% url 'article' article_id %}">
-                {% csrf_token %}
-                <input class="btn btn-light" type="submit" value="Back"></input>
-            </form>
+        <a href="{% url 'article' article_id %}"  class="linkNoDeco">
+            <input class="btn btn-light" type="submit" value="Back"></input>
+        </a>
+
+        </div>
 
 	{% endblock %}
+
 </body>
 </html>

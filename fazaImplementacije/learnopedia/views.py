@@ -37,6 +37,7 @@ def index(request: HttpRequest):
         }
         return render(request, 'home.html', context)
 
+@login_required(login_url='login')
 def makequestions(request: HttpRequest, article_id):
     questionform = QuestionForm(request.POST or None)
     if(questionform.is_valid()):
@@ -59,7 +60,8 @@ def makequestions(request: HttpRequest, article_id):
 
 def article(request: HttpRequest, article_id): #view for viewing an article
     article = Article.objects.get(pk=article_id)
-    comments = Comment.objects.filter(articleId__exact=article_id)
+    comments = Comment.objects.filter(articleId__exact=article)     #getting all comments for article
+    korisnik = request.user
 
     articlesFromAuthor = Article.objects.filter(korisnikId__exact=article.korisnikId).order_by('-numOfLikes') #we sort it by likes
 
@@ -82,10 +84,11 @@ def article(request: HttpRequest, article_id): #view for viewing an article
     if request.user.is_authenticated:
         userLiked = KorisnikLikedArticle.objects.filter(korisnikId__exact=request.user).filter(articleId__exact=article_id).count() > 0
 
-    context = {"article" : article, "totalLikes": totalLikes, "categoriesToShow" : categoriesToShow, "threeArticles" : threeArticles, "userLiked" : userLiked, "comments": comments}
+    context = {"article" : article, "totalLikes": totalLikes, "categoriesToShow" : categoriesToShow, "threeArticles" : threeArticles, "userLiked" : userLiked, "comments": comments, "korisnik":korisnik}
 
     return render(request, 'article.html', context)
 
+@login_required(login_url='login')
 def articleLike(request: HttpRequest, article_id): #view for liking an article
     article = Article.objects.get(pk=article_id)
     if(KorisnikLikedArticle.objects.filter(articleId__exact=article_id).filter(korisnikId__exact=request.user.id).count() == 0): #if he liked
@@ -118,15 +121,15 @@ def categories(request: HttpRequest):
     return render(request, 'categories.html', context)
 
 
-def login_req(request: HttpRequest):    #login korisnika
+def login_req(request: HttpRequest):    #login korisnik
     form = AuthenticationForm(request=request, data=request.POST or None)
     if form.is_valid():
         username = form.cleaned_data['username']
         password = form.cleaned_data['password']
-        user = authenticate(username=username, password=password)    #autorizacija korisnika
+        user = authenticate(username=username, password=password)    #autorization korisnik
 
         if user:
-            login(request, user)         #uspesno logovanje
+            login(request, user)         #successful login
             return redirect('home')
 
     context = {
@@ -135,15 +138,15 @@ def login_req(request: HttpRequest):    #login korisnika
     return render(request, 'login.html', context)
 
 
-def logout_req(request: HttpRequest):        #logout korisnika
+def logout_req(request: HttpRequest):        #logout korisnik
     logout(request)
     return redirect('home')
 
-def registration(request: HttpRequest):       #registracija korisnika
+def registration(request: HttpRequest):       #register korisnik
     form = KorisnikCreationForm(request.POST, request.FILES)
     if form.is_valid():
-        user:Korisnik = form.save()          #belezenje u bazu korisnika
-        login(request, user)                 #logovanje novonapravljenog korisnika
+        user:Korisnik = form.save()          #adding korisnik to database
+        login(request, user)                 #login newest korisnik
         return redirect('home')
     else:
         for field in form:
@@ -189,6 +192,8 @@ def profile(request: HttpRequest, profile_id): #view for profile - shows basic i
     context = {"profile" : profile, "top5Articles" : top5Articles, "top5Categories" : top5Categories}
     return render(request, 'profile.html', context)
 
+
+@login_required(login_url='login')
 def ban(request: HttpRequest, profile_id): #view for banning a user - deletes everything the user ever made (USE WITH CAUTION)
     user = Korisnik.objects.get(pk=profile_id) #delete everything related to this user
 
@@ -208,6 +213,7 @@ def ban(request: HttpRequest, profile_id): #view for banning a user - deletes ev
     user.delete()
     return redirect('home')
 
+@login_required(login_url='login')
 def deleteArticle(request: HttpRequest, article_id): #view for deleting an article - deletes everything related to it too
     article = Article.objects.get(pk=article_id)
     for articleCategory in ArticleCategory.objects.filter(articleId__exact=article):
@@ -223,12 +229,14 @@ def deleteArticle(request: HttpRequest, article_id): #view for deleting an artic
     article.delete()
     return redirect('home')
 
+@login_required(login_url='login')
 def validateArticle(request: HttpRequest, article_id): #view for approving an article by a moderator
     article = Article.objects.get(pk=article_id)
     article.isValidated=1
     article.save()
     return redirect('article', article_id)
 
+@login_required(login_url='login')
 def deleteCategory(request: HttpRequest, article_id, category_id): #view for deleting a category from an article
     article = Article.objects.get(pk=article_id)
     category = Category.objects.get(pk=category_id)
@@ -236,6 +244,7 @@ def deleteCategory(request: HttpRequest, article_id, category_id): #view for del
     articleCategory.delete()
     return redirect('article', article_id)
 
+@login_required(login_url='login')
 def updateProfile(request: HttpRequest, profile_id): #view for updating a user's profile
     profile = Korisnik.objects.get(pk=profile_id)
 
@@ -293,8 +302,6 @@ def test(request: HttpRequest, article_id):     #testiranje na pitanjima za clan
             }
             return render(request, 'results.html', context)
 
-
-
     context = {
         'forms_questions': forms_questions,
         'article_id':article_id,
@@ -311,27 +318,6 @@ def makecomment(request: HttpRequest, article_id):
         article = Article.objects.get(pk=article_id)
         korisnik = request.user
         newComment = Comment.objects.create(articleId=article, korisnikId=korisnik, text=text)
-        newComment.save()                   #saving th comment
-
-        return redirect('article', article_id)
-
-    context = {
-        "comment_form": comment_form,
-        "article_id": article_id
-    }
-
-    return render(request, 'makecomment.html', context)
-
-
-@login_required(login_url='login')
-def makecomment(request: HttpRequest, article_id):
-    comment_form = CommentForm(request.POST or None)        #creating form to write comment
-
-    if comment_form.is_valid():
-        text = comment_form.cleaned_data['text']             #getting text of the comment
-        article = Article.objects.get(pk=article_id)
-        korisnik = request.user
-        newComment = Comment.objects.create(articleId=article, korisnikId=korisnik, text=text)
         newComment.save()                   #saving  comment
 
         return redirect('article', article_id)
@@ -343,29 +329,12 @@ def makecomment(request: HttpRequest, article_id):
     return render(request, 'makecomment.html', context)
 
 
-@login_required(login_url='login')      #nije zavrsen
+@login_required(login_url='login')        #used for deleting comment
 def comment(request: HttpRequest, comment_id):
-    comment_form = CommentForm(request.POST or None)        #creating form to write comment
-    korisnik = request.user
-    comment = Comment.objects.get(pk=comment_id)
-    article = Article.objects.get(pk=comment.articleId.articleId)
-    article_id = article.article_id
-
-    if comment_form.is_valid():
-        text = comment_form.cleaned_data['text']             #getting text of the comment
-        korisnik = request.user
-        newComment = Comment.objects.create(articleId=article, korisnikId=korisnik, text=text)
-        newComment.save()                   #saving  comment
-        comment.delete()                    #deleting old comment
-
-
-    context = {
-        "comment_form": comment_form,
-        "comment_id": comment_id,
-        "article_id": article_id,
-    }
-
-    return render(request, 'comment.html', context)
+    comment = Comment.objects.get(pk=comment_id)            #finding comment for deleting
+    article = Article.objects.get(pk=comment.articleId.articleId)           #finding article to redirect to
+    comment.delete()
+    return redirect('article', article.articleId)
 
 
 @csrf_exempt
