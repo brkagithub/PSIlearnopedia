@@ -42,13 +42,12 @@
          <div class="card-body m-3">
             <form method="post" action="{% url 'home' %}">
                 {% csrf_token %}
-                <button type="submit" value = "{{ category.categoryId }}" name = "category_id"  style="background: none!important;
-                    border: none; cursor: pointer;">
+                <a class="linkNoDeco" href={% url 'category' category.categoryId %}>
 
                         <h3 class="card-title">{{ category.name }}</h3>
                         <p class="card-text">{{ category.description }}</p>
 
-                </button>
+                </a>
             </form>
          </div>
         </div>

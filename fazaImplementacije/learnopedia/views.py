@@ -23,13 +23,7 @@ def index(request: HttpRequest):
             term = searchform.cleaned_data["filter"]
             articles = Article.objects.filter(Q(textContent__contains=term) | Q(title__contains=term) | Q(korisnikId__username__contains=term) )
         else:
-            category_id = request.POST.get('category_id')
-            if category_id :
-                ArticlesWithCategory = ArticleCategory.objects.filter(categoryId = category_id)
-                for ArticleWithCategory in ArticlesWithCategory:
-                    articles.append(ArticleWithCategory.articleId)
-            else:
-                articles = Article.objects.order_by('-title')
+            articles = Article.objects.order_by('-numOfLikes')
         searchform = SearchForm()
         context = {
             'searchform': searchform,
@@ -52,7 +46,7 @@ def category(request: HttpRequest, category_id):
 
 cnt=0
 @login_required(login_url='login')
-def UpdateQuestions(request:HttpRequest, article_id):
+def UpdateQuestions(request: HttpRequest, article_id):
     korisnik_current = request.user
     article = Article.objects.get(articleId=article_id)
     owner = Korisnik.objects.get(pk=article.korisnikId.pk)
@@ -134,7 +128,7 @@ def makequestions(request: HttpRequest, article_id):
 
 def article(request: HttpRequest, article_id): #view for viewing an article
     article = Article.objects.get(pk=article_id)
-    comments = Comment.objects.filter(articleId__exact=article)     #getting all comments for article
+    comments = Comment.objects.filter(articleId__exact=article).order_by('-createdAt')     #getting all comments for article
     korisnik = request.user
 
     articlesFromAuthor = Article.objects.filter(korisnikId__exact=article.korisnikId).order_by('-numOfLikes') #we sort it by likes
@@ -239,8 +233,11 @@ def profile(request: HttpRequest, profile_id): #view for profile - shows basic i
 
     for userGrade in userGrades: # finding top 5 categories the user did tests
         article = userGrade.articleId # we pass numbers of articles from that category and the average score
+
         grade = userGrade.grade
+
         articleCategories = ArticleCategory.objects.filter(articleId__exact=article)
+
         categories = map(returnCategory, articleCategories)
 
         for category in categories:
@@ -341,7 +338,6 @@ def updateProfile(request: HttpRequest, profile_id): #view for updating a user's
     updateForm = UpdateUserForm(request.POST or None)
 
     if updateForm.is_valid():
-        print("valid")
         profile.username = updateForm.cleaned_data["username"]
         profile.first_name = updateForm.cleaned_data["firstName"]
         profile.last_name = updateForm.cleaned_data["lastName"]
@@ -435,7 +431,6 @@ def kreiraj_article(request: HttpRequest):
     form=createArticle(request.POST or None)
     kategorije = Category.objects.all()
     form.f(kategorije)
-    print("kurac1")
     if form.is_valid():
         naslov=form.cleaned_data['title']
         tekst=form.cleaned_data['content']
@@ -445,7 +440,6 @@ def kreiraj_article(request: HttpRequest):
         clanak = Article.objects.create(title=naslov, slug=naslov, isValidated=0, textContent=tekst, previewPicture="",korisnikId=current_user)
         clanak.save()
         for k in kat:
-            print(k)
             clanakKategorija = ArticleCategory.objects.create(articleId=clanak, categoryId=Category.objects.get(pk=k))
             clanakKategorija.save()
         return redirect('makequestion', clanak.articleId)
@@ -455,8 +449,6 @@ def kreiraj_article(request: HttpRequest):
     context = {
         'form': form,
     }
-
-
 
     return render(request, 'create_article.html', context)
 
