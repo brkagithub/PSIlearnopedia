@@ -89,7 +89,25 @@ class createArticle(Form):
 
             choices.append((kat.categoryId, kat.name))
             
-        self.fields["letters"] = forms.MultipleChoiceField(choices=choices,label="kurac",required=False,widget = forms.CheckboxSelectMultiple)
+        self.fields["letters"] = forms.MultipleChoiceField(choices=choices,label="",required=False,widget = forms.CheckboxSelectMultiple)
+
+class updateArticle(Form):
+    title = forms.CharField(max_length=50, required=True)
+    content = forms.CharField(widget=SummernoteWidget(), required=True)
+
+    # letters = forms.MultipleChoiceField()
+    def f(self, kategorije):
+        choices = list()
+        for kat in kategorije:
+            choices.append((kat.categoryId, kat.name))
+
+        self.fields["letters"] = forms.MultipleChoiceField(choices=choices, label="", required=False, widget=forms.CheckboxSelectMultiple(attrs={'checked' : 'fun'}))
+
+
+
+
+
+
 
 
 

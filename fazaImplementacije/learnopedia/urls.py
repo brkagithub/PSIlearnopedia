@@ -45,7 +45,7 @@ urlpatterns = [
     path('questionUpdate/<int:article_id>', UpdateQuestions, name='questionUpdate'),
     path('create_category/', create_category, name='create_category'),
     path('summernote/', include('django_summernote.urls')),
-
+    path('articleUpdate/<int:article_id>',update_article,name='articleUpdate')
 ]
 
 if settings.DEBUG:

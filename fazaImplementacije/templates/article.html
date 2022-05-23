@@ -49,6 +49,9 @@
                   <a href={% url 'makequestion' article.articleId %}
                     ><button class="btn btn-light">Make questions</button></a
                   >
+                  <a href={% url 'articleUpdate' article.articleId %}
+                    ><button class="btn btn-light">Update article</button></a
+                  >
               {% endif %}
 
               <a href={% url 'makecomment' article.articleId %}

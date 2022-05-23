@@ -14,8 +14,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required, permission_required
-
-
+import re
+from django import forms
 def index(request: HttpRequest):
         searchform = SearchForm(request.POST or None)
         articles = []
@@ -50,9 +50,9 @@ def UpdateQuestions(request: HttpRequest, article_id):
     korisnik_current = request.user
     article = Article.objects.get(articleId=article_id)
     owner = Korisnik.objects.get(pk=article.korisnikId.pk)
-    if (
-            owner.pk != korisnik_current.pk and korisnik_current.isModerator == 0 and korisnik_current.isAdministrator == 0):
+    if (owner.pk != korisnik_current.pk and korisnik_current.isModerator == 0 and korisnik_current.isAdministrator == 0):
         return redirect('home')
+
     updateform = QuestionUpdateForm(request.POST or None)
     global cnt
     if( request.method == 'GET'):
@@ -451,10 +451,12 @@ def kreiraj_article(request: HttpRequest):
     if form.is_valid():
         naslov=form.cleaned_data['title']
         tekst=form.cleaned_data['content']
+
+        tekstRaw=re.sub('<[^>]*>', '', tekst)
         kat=form.cleaned_data['letters']
         img = form.cleaned_data['previewPic']
         current_user = request.user
-        clanak = Article.objects.create(title=naslov, slug=naslov, isValidated=0, textContent=tekst, previewPic=img, korisnikId=current_user)
+        clanak = Article.objects.create(title=naslov, slug=naslov, isValidated=0, textContent=tekst,textContentRaw=tekstRaw, previewPicture="",korisnikId=current_user)
         clanak.save()
         for k in kat:
             clanakKategorija = ArticleCategory.objects.create(articleId=clanak, categoryId=Category.objects.get(pk=k))
@@ -472,5 +474,53 @@ def kreiraj_article(request: HttpRequest):
     }
 
     return render(request, 'create_article.html', context)
+
+
+@login_required(login_url='login')
+def update_article(request: HttpRequest,article_id):
+    korisnik_current = request.user
+    article = Article.objects.get(articleId=article_id)
+    articleCat=ArticleCategory.objects.filter(articleId=article_id)
+
+    owner = Korisnik.objects.get(pk=article.korisnikId.pk)
+    if (owner.pk != korisnik_current.pk and korisnik_current.isModerator == 0 and korisnik_current.isAdministrator == 0):
+        return redirect('home')
+    updateForm=updateArticle(request.POST or None)
+
+
+    title=article.title
+    tekst=article.textContent
+    choices=[]
+    names=[]
+    kategorije=[]
+    for el in articleCat:
+
+        id=el.categoryId.categoryId
+        kategorija=Category.objects.get(categoryId=id)
+        kategorije.append(kategorija)
+
+        choices.append((kategorija.categoryId,kategorija.name))
+        names.append(kategorija.name)
+    #print(choices)
+    checkboxovi=forms.MultipleChoiceField(choices=choices,widget=forms.CheckboxSelectMultiple())
+    #attrs={'fun' : 'checked'} 'letters': checkboxovi}
+    #forma=updateForm( initial={ "letters": ids} )
+
+
+    updateForm = updateArticle(initial={'title': title, 'content':  tekst})
+    updateForm.f(kategorije)
+    #updateForm.f(kategorije)
+
+
+
+
+    context={
+        'form':   updateForm,
+    }
+    return render(request, 'articleUpdate.html', context)
+
+
+
+
 
 
