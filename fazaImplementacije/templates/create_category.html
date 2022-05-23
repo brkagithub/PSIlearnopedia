@@ -10,10 +10,16 @@
 
         <form method="POST">
             {% csrf_token %}
-            <div>
-                Text:
-            </div>
-                {{ comment_form.text }}
+                <div>
+                    Name:
+                    {{ category_form.name }}
+                </div>
+                <div>
+                    Description:
+                </div>
+                <div>
+                    {{ category_form.description }}
+                </div>
 
             <br>
             <input class="btn btn-light" type="submit" value="Submit"></input>
@@ -21,7 +27,7 @@
 
         <br>
         <br>
-        <form method="POST" action="{% url 'article' article_id %}">
+        <form method="POST" action="{% url 'home' %}">
                 {% csrf_token %}
                 <input class="btn btn-danger" type="submit" value="Cancel"></input>
             </form>

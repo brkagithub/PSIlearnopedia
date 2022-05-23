@@ -134,11 +134,18 @@
                         </div>
                         <p class="card-text card-author">By {{ comment.korisnikId.username }}</p>
                     </div>
-                    {% if comment.korisnikId.pk == korisnik.pk %}
-                    <a href="{%url 'comment' comment.commentId %}"  class="linkNoDeco">
+                    {% if comment.korisnikId.pk == korisnik.pk%}
+                    <a href="{%url 'deletecomment' comment.commentId %}"  class="linkNoDeco">
                     <input class="btn btn-danger" type="submit" value="Delete"></input>
                     </a>
-                      {% endif %}
+                        {% else %}
+                            {% if deletebutton %}
+                                <a href="{%url 'deletecomment' comment.commentId %}"  class="linkNoDeco">
+                                <input class="btn btn-danger" type="submit" value="Delete"></input>
+                                </a>
+                            {% endif %}
+
+                    {% endif %}
 
                   </div>
               </div>

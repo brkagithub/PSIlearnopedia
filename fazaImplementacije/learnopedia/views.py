@@ -130,6 +130,9 @@ def article(request: HttpRequest, article_id): #view for viewing an article
     article = Article.objects.get(pk=article_id)
     comments = Comment.objects.filter(articleId__exact=article).order_by('-createdAt')     #getting all comments for article
     korisnik = request.user
+    deletebutton = False
+    if (korisnik.isModerator == 1 or korisnik.isAdministrator == 1):         #allowing moderators and admins to delet comments
+        deletebuttom = True
 
     articlesFromAuthor = Article.objects.filter(korisnikId__exact=article.korisnikId).order_by('-numOfLikes') #we sort it by likes
 
@@ -152,7 +155,7 @@ def article(request: HttpRequest, article_id): #view for viewing an article
     if request.user.is_authenticated:
         userLiked = KorisnikLikedArticle.objects.filter(korisnikId__exact=request.user).filter(articleId__exact=article_id).count() > 0
 
-    context = {"article" : article, "totalLikes": totalLikes, "categoriesToShow" : categoriesToShow, "threeArticles" : threeArticles, "userLiked" : userLiked, "comments": comments, "korisnik":korisnik}
+    context = {"article" : article, "totalLikes": totalLikes, "categoriesToShow" : categoriesToShow, "threeArticles" : threeArticles, "userLiked" : userLiked, "comments": comments, "korisnik":korisnik, "deletebutton": deletebutton}
 
     return render(request, 'article.html', context)
 
@@ -350,7 +353,7 @@ def updateProfile(request: HttpRequest, profile_id): #view for updating a user's
     return render(request, 'updateProfile.html', context)
 
 @login_required(login_url='login')
-def test(request: HttpRequest, article_id):     #testiranje na pitanjima za clanak
+def test(request: HttpRequest, article_id):     #view za testiranje na pitanjima za clanak
     article = Article.objects.get(pk=article_id)
     korisnik = Korisnik.objects.get(pk=request.user.id)
     forms_questions = []               #forma za svako pitanje
@@ -397,7 +400,7 @@ def test(request: HttpRequest, article_id):     #testiranje na pitanjima za clan
 
 
 @login_required(login_url='login')
-def makecomment(request: HttpRequest, article_id):
+def makecomment(request: HttpRequest, article_id):        #view for creating comment
     comment_form = CommentForm(request.POST or None)        #creating form to write comment
 
     if comment_form.is_valid():
@@ -416,13 +419,28 @@ def makecomment(request: HttpRequest, article_id):
     return render(request, 'makecomment.html', context)
 
 
-@login_required(login_url='login')        #used for deleting comment
-def comment(request: HttpRequest, comment_id):
+@login_required(login_url='login')
+def deletecomment(request: HttpRequest, comment_id):        #view for deleting comment
     comment = Comment.objects.get(pk=comment_id)            #finding comment for deleting
     article = Article.objects.get(pk=comment.articleId.articleId)           #finding article to redirect to
     comment.delete()
     return redirect('article', article.articleId)
 
+@login_required(login_url="login")
+def create_category(request:HttpRequest):       #view for creating category
+    form = CategoryForm(request.POST or None)
+
+    if form.is_valid():
+        name = form.cleaned_data["name"]
+        description = form.cleaned_data["description"]
+        newCategory = Category.objects.create(name=name, description=description)           #creating new category width data from form
+        newCategory.save()
+        return redirect("home")     #return home after made category
+
+    context = {
+        "category_form": form,
+    }
+    return render(request, "create_category.html", context)
 
 @csrf_exempt
 @login_required(login_url='login')

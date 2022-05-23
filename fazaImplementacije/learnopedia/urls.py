@@ -41,9 +41,11 @@ urlpatterns = [
     path('makequestions/<int:article_id>',makequestions, name='makequestion'),
     path('test/<int:article_id>', test, name="test"),
     path('makecomment/<int:article_id>', makecomment, name='makecomment'),
-    path('comment/<int:comment_id>', comment, name='comment'),
+    path('deletecomment/<int:comment_id>', deletecomment, name='deletecomment'),
     path('questionUpdate/<int:article_id>', UpdateQuestions, name='questionUpdate'),
+    path('create_category/', create_category, name='create_category'),
     path('summernote/', include('django_summernote.urls')),
+
 ]
 
 if settings.DEBUG:
