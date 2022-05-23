@@ -67,24 +67,33 @@ def UpdateQuestions(request: HttpRequest, article_id):
             answer4 = updateform.cleaned_data['Answer4']
             choice = int(updateform.cleaned_data['choice'])
             points = updateform.cleaned_data['Points']
-            article = Article.objects.get(articleId=article_id)
+
             question = Question.objects.filter(articleId=article_id)[cnt]
             question.answer1 = answer1; question.answer3 = answer3
             question.answer2 = answer2; question.answer4 = answer4
             question.text= textquestion; question.correct = choice
             question.points=points
+
             question.save()
             cnt = cnt + 1
 
-    if(Question.objects.filter(articleId=article_id).count() > cnt):
+            button = request.POST.get("questionUpdate")
+            if button == 'Finish':  # if finished making questions go to article
+                return redirect('article', article_id)
+
+    NumOfQuestions = Question.objects.filter(articleId=article_id).count()
+    if(NumOfQuestions > cnt):
         question = Question.objects.filter(articleId=article_id)[cnt]
         a1 = question.answer1; a2 = question.answer2; a3 = question.answer3; a4 = question.answer4;
         q = question.text;  odgovor = question.correct; points = question.points
-        updateform = QuestionUpdateForm(initial= {'Question':q,'Answer1':a1,'Answer2':a2,'Answer3':a3,'Answer4':a4,'choice': odgovor, 'points':points})
+        updateform = QuestionUpdateForm(initial= {'Question':q,'Answer1':a1,'Answer2':a2,'Answer3':a3,'Answer4':a4,'choice': odgovor, 'Points':points})
     else:
         updateform = QuestionUpdateForm()
     context = {
+        'cnt': (cnt + 1) ,
+        'NumOfQuestions': NumOfQuestions,
         'updateForm': updateform,
+        'articleId': article_id,
     }
     return render(request, 'questionUpdate.html', context)
 
@@ -456,7 +465,7 @@ def kreiraj_article(request: HttpRequest):
         kat=form.cleaned_data['letters']
         img = form.cleaned_data['previewPic']
         current_user = request.user
-        clanak = Article.objects.create(title=naslov, slug=naslov, isValidated=0, textContent=tekst,textContentRaw=tekstRaw, previewPicture="",korisnikId=current_user)
+        clanak = Article.objects.create(title=naslov, slug=naslov, isValidated=0, textContent=tekst,textContentRaw=tekstRaw, previewPic=img,korisnikId=current_user)
         clanak.save()
         for k in kat:
             clanakKategorija = ArticleCategory.objects.create(articleId=clanak, categoryId=Category.objects.get(pk=k))

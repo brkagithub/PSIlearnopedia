@@ -46,6 +46,9 @@
                     ><button class="btn btn-light">Test yourself</button></a
                   >
               {% else %}
+                  <a href={% url 'questionUpdate' article.articleId %}
+                    ><button class="btn btn-light">Update questions</button></a
+                  >
                   <a href={% url 'makequestion' article.articleId %}
                     ><button class="btn btn-light">Make questions</button></a
                   >

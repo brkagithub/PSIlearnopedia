@@ -85,8 +85,12 @@
             <div>
                 <h5>Points</h5>  {{updateForm.Points}}
             </div><br>
-                <input type="submit" value="Next" class="btn btn-success" style="float: right">
-                <input type="submit" value="Done" class="btn btn-success" style="float: left">
+                {%  if NumOfQuestions > cnt %}
+                <input type="submit" value="Next Question" name="questionUpdate" class="btn btn-info" style="float: right; Margin: 10px">
+                {% endif %}
+                <input type="submit" value="Finish" name="questionUpdate" class="btn btn-info" style="float: right; Margin: 10px">
+                <a href={% url 'article' articleId %}><div class="btn btn-light">Cancel</div></a>
+
         </form>
         <div class="d-flex align-items-center pt-3">
             <div class="ml-auto mr-sm-5">
