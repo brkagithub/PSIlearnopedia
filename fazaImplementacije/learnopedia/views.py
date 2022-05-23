@@ -264,6 +264,8 @@ def ban(request: HttpRequest, profile_id): #view for banning a user - deletes ev
         return redirect('home')
 
     user = Korisnik.objects.get(pk=profile_id) #delete everything related to this user
+    for comment in Comment.objects.filter(korisnikId__exact=user):
+        comment.delete()
 
     for article in Article.objects.filter(korisnikId__exact=profile_id):
         for articleCategory in ArticleCategory.objects.filter(articleId__exact=article):
