@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="{% static 'article.css' %}" />
     <link rel="stylesheet" href="{% static 'profile.css' %}" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="{% static 'article1.js' %}"></script>
+    <script src="{% static 'article.js' %}"></script>
     <title>Learnopedia</title>
     {% endblock %}
   </head>
@@ -35,9 +35,9 @@
               {{ article.title }}
           </h1>
           <div id="content" class="marginLR60" >
-
-                <div id="sakriven" style="display: none;">{{ article.textContent }}</div>
-                <div id="sadrzaj"></div>
+               <div id="sadrzaj">
+                    {{ article.textContent|safe }}
+                </div>
 
           </div>
           {% if user.is_authenticated %}

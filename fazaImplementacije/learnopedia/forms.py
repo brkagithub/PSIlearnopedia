@@ -14,7 +14,7 @@ class KorisnikCreationForm(UserCreationForm):
     class Meta:
         model = Korisnik
 
-        fields = ['username', 'password1', 'password2', 'first_name', 'last_name', 'description']
+        fields = ['username', 'password1', 'password2', 'first_name', 'last_name', 'description', 'profilePic']
 
 
 class SearchForm(Form):
@@ -74,13 +74,14 @@ class Testing(Form):
 class createArticle(Form):
     title=forms.CharField(max_length=50,required=True)
     content = forms.CharField(widget=SummernoteWidget(),required=True)
+    previewPic = forms.ImageField(required=False)
     #letters = forms.MultipleChoiceField()
     def f(self, kategorije):
         choices = list()
 
         for kat in kategorije:
 
-            choices.append((kat.categoryId,kat.name))
+            choices.append((kat.categoryId, kat.name))
             
         self.fields["letters"] = forms.MultipleChoiceField(choices=choices,label="kurac",required=False,widget = forms.CheckboxSelectMultiple)
 

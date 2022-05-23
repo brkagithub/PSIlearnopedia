@@ -8,7 +8,7 @@ import datetime
 class Korisnik(AbstractUser):
     isModerator = models.IntegerField(db_column='isModerator', default=False)  # Field name made lowercase.
     isAdministrator = models.IntegerField(db_column='isAdministrator', default=False)  # Field name made lowercase.
-    profilePic = models.TextField(db_column='profilePic', blank=True, null=True)  # Field name made lowercase.
+    profilePic = models.ImageField(upload_to='imgs/', null=True)
     description = models.TextField(null=True)
 
     class Meta:
@@ -16,12 +16,12 @@ class Korisnik(AbstractUser):
 
 class Article(models.Model):
     articleId = models.AutoField(db_column='articleId', primary_key=True)  # Field name made lowercase.
+    previewPic = models.ImageField(upload_to='imgs/', null=True)
     title = models.CharField(max_length=25)
     slug = models.CharField(unique=True, max_length=25)
     createdAt = models.DateTimeField(default=datetime.datetime.now())
     isValidated = models.IntegerField(db_column='isValidated')  # Field name made lowercase.
     textContent = models.TextField(db_column='textContent')  # Field name made lowercase.
-    previewPicture = models.TextField(db_column='previewPicture', blank=True, null=True)  # Field name made lowercase.
     korisnikId = models.ForeignKey('Korisnik', models.DO_NOTHING, db_column='korisnikId')  # Field name made lowercase.
     numOfLikes = models.IntegerField(default=0)
 

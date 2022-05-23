@@ -39,7 +39,7 @@
 </head>
 <body>
     {% block content %}
-    <form action="" method="POST">
+    <form action="" method="POST" enctype="multipart/form-data">
 
         {% csrf_token %}
         Title:        {{ form.title }}
@@ -52,7 +52,13 @@
 
         <br><span class="greska" id="textGreska" style="color: red; height: 10px;"></span><br>
 
-        Kategorije:
+        Preview pic:
+
+        {{ form.previewPic }}
+
+        <br><span class="greska" id="slikaGreska" style="color: red; height: 10px;"></span><br>
+
+        Categories:
         {{ form.letters }}
 
 

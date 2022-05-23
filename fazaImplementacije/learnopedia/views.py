@@ -1,7 +1,7 @@
 
 # Create your views here.
-
 import json
+import re
 
 from django.contrib.auth.decorators import login_required
 
@@ -213,7 +213,6 @@ def registration(request: HttpRequest):       #register korisnik
         user:Korisnik = form.save()          #adding korisnik to database
         login(request, user)                 #login newest korisnik
         return redirect('home')
-
     context = {
         'form': form
     }
@@ -426,23 +425,25 @@ def comment(request: HttpRequest, comment_id):
 @csrf_exempt
 @login_required(login_url='login')
 def kreiraj_article(request: HttpRequest):
-
-
-    form=createArticle(request.POST or None)
+    form=createArticle(request.POST or None, request.FILES)
     kategorije = Category.objects.all()
     form.f(kategorije)
     if form.is_valid():
         naslov=form.cleaned_data['title']
         tekst=form.cleaned_data['content']
         kat=form.cleaned_data['letters']
-
+        img = form.cleaned_data['previewPic']
         current_user = request.user
-        clanak = Article.objects.create(title=naslov, slug=naslov, isValidated=0, textContent=tekst, previewPicture="",korisnikId=current_user)
+        clanak = Article.objects.create(title=naslov, slug=naslov, isValidated=0, textContent=tekst, previewPic=img, korisnikId=current_user)
         clanak.save()
         for k in kat:
             clanakKategorija = ArticleCategory.objects.create(articleId=clanak, categoryId=Category.objects.get(pk=k))
             clanakKategorija.save()
         return redirect('makequestion', clanak.articleId)
+    else:
+        for field in form:
+            print(field.name)
+            print(field.errors)
 
 
 
