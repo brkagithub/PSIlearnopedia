@@ -487,46 +487,53 @@ def kreiraj_article(request: HttpRequest):
 
 @login_required(login_url='login')
 def update_article(request: HttpRequest,article_id):
-    korisnik_current = request.user
+    korisnik_current = request.user #Identifikacija i protekcija protiv nasilov URL ulaska
     article = Article.objects.get(articleId=article_id)
-    articleCat=ArticleCategory.objects.filter(articleId=article_id)
-
     owner = Korisnik.objects.get(pk=article.korisnikId.pk)
     if (owner.pk != korisnik_current.pk and korisnik_current.isModerator == 0 and korisnik_current.isAdministrator == 0):
         return redirect('home')
-    updateForm=updateArticle(request.POST or None)
 
 
-    title=article.title
-    tekst=article.textContent
-    choices=[]
-    names=[]
-    kategorije=[]
-    for el in articleCat:
+    if(request.method == 'POST'): #
+        updateForm = updateArticle(request.POST or None,selectedCategories=[])
+        if updateForm.is_valid():
+            title = updateForm.cleaned_data['title'] #Uzimanje iz forme
+            content = updateForm.cleaned_data['content']
+            pic = updateForm.cleaned_data['previewPic']
+            categoriesPk = updateForm.cleaned_data['categories']
 
-        id=el.categoryId.categoryId
-        kategorija=Category.objects.get(categoryId=id)
-        kategorije.append(kategorija)
+            article.title = title;article.textContent = content;article.previewPic = pic; #Update artikla
+            article.save()
 
-        choices.append((kategorija.categoryId,kategorija.name))
-        names.append(kategorija.name)
-    #print(choices)
-    checkboxovi=forms.MultipleChoiceField(choices=choices,widget=forms.CheckboxSelectMultiple())
-    #attrs={'fun' : 'checked'} 'letters': checkboxovi}
-    #forma=updateForm( initial={ "letters": ids} )
+            ArticlesWithCategories = ArticleCategory.objects.filter(articleId=article_id) #Brisanje trenutnih objekata ArticleCategory vezanih za dati artikal
+            for ArticleWithCategory in ArticlesWithCategories:
+                ArticleWithCategory.delete()
+
+            categories = []
+            for pk in categoriesPk:   #Dobijanje svih novih kategorija iz njihovih PK
+                categories.append(Category.objects.get(pk=pk))
+
+            for category in categories: #Dodavanje novih objekata ArticleCategory vezanih za dati artikal
+                obj = ArticleCategory(articleId=article, categoryId=category)
+                obj.save()
+
+            return redirect('home')
 
 
-    updateForm = updateArticle(initial={'title': title, 'content':  tekst})
-    updateForm.f(kategorije)
-    #updateForm.f(kategorije)
+    if(request.method == 'GET'): #Inicijalizovanje Forme prvi put
+        ArticlesWithCategory = ArticleCategory.objects.filter(articleId=article_id) #Podaci potrebni za inicijalizovanje forme
+        categories = []
+        for ArticleWithCategory in ArticlesWithCategory:
+            if ArticleWithCategory.categoryId.pk not in categories:
+                categories.append(ArticleWithCategory.categoryId.pk)
+        updateForm = updateArticle(selectedCategories=categories,initial={'title':article.title,'content':article.textContent,'previewPic':article.previewPic}) #Kontrukcija
 
 
-
-
-    context={
-        'form':   updateForm,
+    context = {
+        'form': updateForm,
     }
     return render(request, 'articleUpdate.html', context)
+
 
 
 

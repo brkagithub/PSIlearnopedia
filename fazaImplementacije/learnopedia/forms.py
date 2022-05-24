@@ -91,21 +91,19 @@ class createArticle(Form):
             
         self.fields["letters"] = forms.MultipleChoiceField(choices=choices,label="",required=False,widget = forms.CheckboxSelectMultiple)
 
+
 class updateArticle(Form):
     title = forms.CharField(max_length=50, required=True)
     content = forms.CharField(widget=SummernoteWidget(), required=True)
-
+    previewPic = forms.ImageField(required=False)
+    categories = forms.MultipleChoiceField(required=False,widget=forms.CheckboxSelectMultiple)
     # letters = forms.MultipleChoiceField()
-    def f(self, kategorije):
-        choices = list()
-        for kat in kategorije:
-            choices.append((kat.categoryId, kat.name))
-
-        self.fields["letters"] = forms.MultipleChoiceField(choices=choices, label="", required=False, widget=forms.CheckboxSelectMultiple(attrs={'checked' : 'fun'}))
-
-
-
-
+    def __init__(self, *args,**kwargs):
+        allCategories = [(cat.categoryId, cat.name) for cat in Category.objects.all()]
+        sCategories=kwargs.pop('selectedCategories')
+        super(updateArticle,self).__init__(*args,**kwargs)
+        self.fields['categories'].choices = allCategories
+        self.fields['categories'].initial = sCategories
 
 
 
