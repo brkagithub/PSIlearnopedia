@@ -495,14 +495,14 @@ def update_article(request: HttpRequest,article_id):
 
 
     if(request.method == 'POST'): #
-        updateForm = updateArticle(request.POST or None,selectedCategories=[])
+        updateForm = updateArticle(request.POST or None,request.FILES ,selectedCategories=[])
         if updateForm.is_valid():
             title = updateForm.cleaned_data['title'] #Uzimanje iz forme
             content = updateForm.cleaned_data['content']
             pic = updateForm.cleaned_data['previewPic']
             categoriesPk = updateForm.cleaned_data['categories']
 
-            article.title = title;article.textContent = content;article.previewPic = pic; #Update artikla
+            article.title = title; article.textContent = content; article.previewPic = pic #Update artikla
             article.save()
 
             ArticlesWithCategories = ArticleCategory.objects.filter(articleId=article_id) #Brisanje trenutnih objekata ArticleCategory vezanih za dati artikal
