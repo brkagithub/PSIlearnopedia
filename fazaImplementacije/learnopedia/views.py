@@ -16,6 +16,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required, permission_required
 import re
 from django import forms
+
+# Marko Brkic i Rasa Stojanovic
+# View za home stranicu, vraca je renderovanu sa filtriranim clancima preko searcha ili svim clancima poredjanih
+# Po broju lajkova opadajuce (popularnosti)
 def index(request: HttpRequest):
         searchform = SearchForm(request.POST or None)
         articles = []
@@ -31,6 +35,8 @@ def index(request: HttpRequest):
         }
         return render(request, 'home.html', context)
 
+# Marko Brkic i Rasa Stojanovic
+# View za prikaz kategorije
 def category(request: HttpRequest, category_id):
     articles = []
     ArticlesWithCategory = ArticleCategory.objects.filter(categoryId=category_id)
@@ -134,13 +140,14 @@ def makequestions(request: HttpRequest, article_id):
     }
     return render(request, 'makequestions.html', context)
 
-
-def article(request: HttpRequest, article_id): #view for viewing an article
+# Marko Brkic
+# view for viewing an article, shows the article, its author, number of likes and articles from the same author
+def article(request: HttpRequest, article_id):
     article = Article.objects.get(pk=article_id)
     comments = Comment.objects.filter(articleId__exact=article).order_by('-createdAt')     #getting all comments for article
     korisnik = request.user
     deletebutton = False
-    if (korisnik.isModerator == 1 or korisnik.isAdministrator == 1):         #allowing moderators and admins to delet comments
+    if (request.user.is_authenticated and (korisnik.isModerator == 1 or korisnik.isAdministrator == 1)):         #allowing moderators and admins to delet comments
         deletebuttom = True
 
     articlesFromAuthor = Article.objects.filter(korisnikId__exact=article.korisnikId).order_by('-numOfLikes') #we sort it by likes
@@ -168,6 +175,8 @@ def article(request: HttpRequest, article_id): #view for viewing an article
 
     return render(request, 'article.html', context)
 
+# Marko Brkic
+# view for liking or disliking an article based on whether the user has liked it already
 @login_required(login_url='login')
 def articleLike(request: HttpRequest, article_id): #view for liking an article
     article = Article.objects.get(pk=article_id)
@@ -183,7 +192,8 @@ def articleLike(request: HttpRequest, article_id): #view for liking an article
     return redirect('article', article_id)
 
 
-
+# Marko Brkic
+# view for seeing all the categories, you can click one to filter articles to match only that one category
 def categories(request: HttpRequest):
     searchcategory = SearchCategoryForm(request.POST or None)
     if searchcategory.is_valid():
@@ -230,10 +240,13 @@ def registration(request: HttpRequest):       #register korisnik
     }
     return render(request, 'register.html', context)
 
-def returnCategory(articleCategory: ArticleCategory): #helper function to return catId from ArticleCategory class
+# helper function to return catId from ArticleCategory class
+def returnCategory(articleCategory: ArticleCategory):
     return articleCategory.categoryId
 
-def profile(request: HttpRequest, profile_id): #view for profile - shows basic info, most popular articles and grades by categories
+# Marko Brkic
+# View for the profile, shows the user info and their 5 most popular articles and the user's best 5 grades by category
+def profile(request: HttpRequest, profile_id):
     profile = Korisnik.objects.get(pk=profile_id)
 
     top5Articles = Article.objects.filter(korisnikId__exact=profile_id).order_by('-numOfLikes')[:5]
@@ -268,9 +281,10 @@ def profile(request: HttpRequest, profile_id): #view for profile - shows basic i
     context = {"profile" : profile, "top5Articles" : top5Articles, "top5Categories" : top5Categories}
     return render(request, 'profile.html', context)
 
-
+# Marko Brkic
+#view for banning a user - deletes everything the user ever made (USE WITH CAUTION)
 @login_required(login_url='login')
-def ban(request: HttpRequest, profile_id): #view for banning a user - deletes everything the user ever made (USE WITH CAUTION)
+def ban(request: HttpRequest, profile_id):
     korisnik_current = request.user
     if (korisnik_current.isModerator==0 and korisnik_current.isAdministrator==0):              #provera da li je administrator ili moderator
         return redirect('home')
@@ -295,8 +309,10 @@ def ban(request: HttpRequest, profile_id): #view for banning a user - deletes ev
     user.delete()
     return redirect('home')
 
+# Marko Brkic
+# view for deleting an article - deletes everything related to it too
 @login_required(login_url='login')
-def deleteArticle(request: HttpRequest, article_id): #view for deleting an article - deletes everything related to it too
+def deleteArticle(request: HttpRequest, article_id):
     korisnik_current = request.user
     article = Article.objects.get(pk=article_id)
     owner = Korisnik.objects.get(pk=article.korisnikId.pk)
@@ -316,9 +332,10 @@ def deleteArticle(request: HttpRequest, article_id): #view for deleting an artic
         comment.delete()
     article.delete()
     return redirect('home')
-
+# Marko Brkic
+# view for approving an article by a moderator
 @login_required(login_url='login')
-def validateArticle(request: HttpRequest, article_id): #view for approving an article by a moderator
+def validateArticle(request: HttpRequest, article_id):
     korisnik_current = request.user
     if (korisnik_current.isModerator == 0 and korisnik_current.isAdministrator == 0):  # provera da li je administrator ili moderator
         return redirect('home')
@@ -328,8 +345,10 @@ def validateArticle(request: HttpRequest, article_id): #view for approving an ar
     article.save()
     return redirect('article', article_id)
 
+# Marko Brkic
+# view for deleting a category from an article, only shown to a moderator/admin, its called by clicking on a category
 @login_required(login_url='login')
-def deleteCategory(request: HttpRequest, article_id, category_id): #view for deleting a category from an article
+def deleteCategory(request: HttpRequest, article_id, category_id):
     korisnik_current = request.user
     article = Article.objects.get(articleId=article_id)
     owner = Korisnik.objects.get(pk=article.korisnikId.pk)
@@ -341,20 +360,27 @@ def deleteCategory(request: HttpRequest, article_id, category_id): #view for del
     articleCategory.delete()
     return redirect('article', article_id)
 
+# Marko Brkic
+# view for updating a user's profile
 @login_required(login_url='login')
-def updateProfile(request: HttpRequest, profile_id): #view for updating a user's profile
+def updateProfile(request: HttpRequest, profile_id):
     korisnik_current = request.user
     profile = Korisnik.objects.get(pk=profile_id)
-    if (profile.pk != korisnik_current.pk and korisnik_current.isModerator == 0 and korisnik_current.isAdministrator == 0):  # proverava da li je trenutni user stvarno vlasnik artikla, ili moderator ili admin
+    if (profile.pk != korisnik_current.pk):  # proverava da li je trenutni user stvarno taj korisnik
         return redirect('home')
 
-    updateForm = UpdateUserForm(request.POST or None)
+    updateForm = UpdateUserForm(request.POST or None, request.FILES)
 
     if updateForm.is_valid():
+        if(Korisnik.objects.filter(username__exact=updateForm.cleaned_data["username"]).count() > 0):
+            context = {"profile": profile, "form": updateForm, "msg": "User with that username already exists"}
+            return render(request, 'updateProfile.html', context)
         profile.username = updateForm.cleaned_data["username"]
         profile.first_name = updateForm.cleaned_data["firstName"]
         profile.last_name = updateForm.cleaned_data["lastName"]
         profile.description = updateForm.cleaned_data["description"]
+        print(updateForm.cleaned_data['profilePic'])
+        profile.profilePic = updateForm.cleaned_data['profilePic']
         profile.save()
         return redirect("profile", profile.id)
 
@@ -533,10 +559,3 @@ def update_article(request: HttpRequest,article_id):
         'form': updateForm,
     }
     return render(request, 'articleUpdate.html', context)
-
-
-
-
-
-
-

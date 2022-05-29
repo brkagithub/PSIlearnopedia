@@ -26,8 +26,11 @@
   </head>
 <body>
     {% block content %}
+    {% if msg %}
+        <h1 class="m-3" style="color: #9daaf2">{{ msg }}</h1>
+    {% endif %}
     <h1 class="m-3" style="color: #9daaf2">Hello {{ profile.username }}, update profile here</h1>
-    <form class="m-3" style="color: #9daaf2" method="POST">
+    <form class="m-3" style="color: #9daaf2" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         Username: {{ form.username }}
         <br>
@@ -37,6 +40,7 @@
         <br>
         Description: {{ form.description }}
         <br>
+        Profile pic: {{ form.profilePic }}
         <br>
         <input type="submit" value="Update"/>
     </form>

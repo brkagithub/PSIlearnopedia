@@ -39,6 +39,8 @@ $(document).ready(() => {
 
   const contentEl = $("#content");
 
+    $('#summernote').summernote('foreColor', 'blue');
+
   /*categories.map((categoryName) => {
     categoriesEl.append(
       `<a href="${categoryName}.html" class="textNoDeco"><button class="rounded-circle categoryChip">${categoryName}</button></a>`

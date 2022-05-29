@@ -50,7 +50,7 @@
                     ><button class="btn btn-light">Update questions</button></a
                   >
                   <a href={% url 'makequestion' article.articleId %}
-                    ><button class="btn btn-light">Make questions</button></a
+                    ><button class="btn btn-light">Add questions</button></a
                   >
                   <a href={% url 'articleUpdate' article.articleId %}
                     ><button class="btn btn-light">Update article</button></a
@@ -104,9 +104,11 @@
           </div>
         </div>
         <div id="author" class="author col-12 col-lg-3">
-            <h3>profile pic</h3>
+            {% if article.korisnikId.profilePic %}
+                  <img src="{{ article.korisnikId.profilePic.url }}" class="profilePic rounded" alt="..." />
+            {% endif %}
             <a href={% url 'profile' article.korisnikId.id %}> <h3 class="underlinedAuthor">{{ article.korisnikId.first_name }} {{ article.korisnikId.last_name }}</h3> </a>
-            <p>Total likes: {{ totalLikes }}</p>
+            <p>Author total likes: {{ totalLikes }}</p>
             <h6>From same author</h6>
             {% for article in threeArticles %}
                 <a href={% url 'article' article.articleId %}><h5>{{ article.title }}</h5></a>
@@ -134,11 +136,14 @@
           {% for comment in comments %}
               <div class="col-12 offset-0 offset-lg-2 col-lg-5">
                   <div class="card m-3" >
-                    <div class="card-body">
+                    <div class="card-body" style="text-align: left">
+                        {% if comment.korisnikId.profilePic %}
+                            <a href={% url 'profile' article.korisnikId.id %}> <img src="{{ comment.korisnikId.profilePic.url }}" class="profilePic rounded" alt="..." /> </a>
+                        {% endif %}
                         <div class="flex">
                             <h5 class="card-title">{{ comment.text }}</h5>
                         </div>
-                        <p class="card-text card-author">By {{ comment.korisnikId.username }}</p>
+                        <a class="linkNoDeco" href={% url 'profile' article.korisnikId.id %}><p class="card-text card-author">By {{ comment.korisnikId.username }}</p></a>
                     </div>
                     {% if comment.korisnikId.pk == korisnik.pk%}
                     <a href="{%url 'deletecomment' comment.commentId %}"  class="linkNoDeco">

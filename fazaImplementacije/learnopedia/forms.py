@@ -16,6 +16,12 @@ class KorisnikCreationForm(UserCreationForm):
 
         fields = ['username', 'password1', 'password2', 'first_name', 'last_name', 'description', 'profilePic']
 
+class UpdateUserForm(Form):
+    username = forms.CharField(max_length=50, label="Username")
+    firstName = forms.CharField(max_length=50, label="First Name")
+    lastName = forms.CharField(max_length=50, label="Last Name")
+    profilePic = forms.ImageField(required=False)
+    description = forms.CharField(widget=forms.Textarea, label="Description")
 
 class SearchForm(Form):
     filter = forms.CharField(max_length=50)
@@ -32,13 +38,6 @@ class CategoryForm(ModelForm):
     class Meta:
         model = Category
         fields = ['name', 'description']
-
-
-class UpdateUserForm(Form):
-    username = forms.CharField(max_length=50, label="Username")
-    firstName = forms.CharField(max_length=50, label="First Name")
-    lastName = forms.CharField(max_length=50, label="Last Name")
-    description = forms.CharField(widget=forms.Textarea, label="Description")
 
 
 class QuestionUpdateForm(Form):
@@ -77,6 +76,7 @@ class Testing(Form):
         self.fields[name] = forms.ChoiceField(widget=RadioSelect(), choices=[('1', a1), ('2', a2), ('3', a3), ('4', a4)])
         self.question_text = q
 
+# Ilija Markovic i Marko Brkic
 class createArticle(Form):
     title=forms.CharField(max_length=50,required=True)
     content = forms.CharField(widget=SummernoteWidget(),required=True)
