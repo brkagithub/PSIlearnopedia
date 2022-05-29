@@ -1,6 +1,7 @@
 from django.db import models
 
 # Create your models here
+#Marko Brkic i Dejan Draskovic
 
 from django.contrib.auth.models import AbstractUser, User
 import datetime

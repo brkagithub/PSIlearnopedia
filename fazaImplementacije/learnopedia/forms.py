@@ -9,8 +9,9 @@ from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
 from django.forms import ModelForm,Form
 from django.forms import ModelForm, TextInput, EmailInput
 
+#Dejan Draskovic
+#form for registering new user
 class KorisnikCreationForm(UserCreationForm):
-
     class Meta:
         model = Korisnik
 
@@ -26,13 +27,16 @@ class UpdateUserForm(Form):
 class SearchForm(Form):
     filter = forms.CharField(max_length=50)
 
-
+#Dejan Draskovic
+#form for creating new comment
 class CommentForm(ModelForm):
 
     class Meta:
         model = Comment
         fields = ['text']
 
+#Dejan Draskovic
+#form for creating new category
 class CategoryForm(ModelForm):
 
     class Meta:
@@ -69,7 +73,8 @@ class QuestionForm(Form):
 class SearchCategoryForm(Form):
     filter = forms.CharField(max_length=50)
 
-
+#Dejan Draskovic
+#form for testing on article
 class Testing(Form):
     question_text = ""
     def change(self ,q, a1, a2, a3, a4, name):

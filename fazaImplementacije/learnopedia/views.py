@@ -140,8 +140,8 @@ def makequestions(request: HttpRequest, article_id):
     }
     return render(request, 'makequestions.html', context)
 
-# Marko Brkic
-# view for viewing an article, shows the article, its author, number of likes and articles from the same author
+# Marko Brkic i Dejan Draskovic
+# view for viewing an article, shows the article, its author, its comments, number of likes and articles from the same author
 def article(request: HttpRequest, article_id):
     article = Article.objects.get(pk=article_id)
     comments = Comment.objects.filter(articleId__exact=article).order_by('-createdAt')     #getting all comments for article
@@ -209,8 +209,9 @@ def categories(request: HttpRequest):
             }
     return render(request, 'categories.html', context)
 
-
-def login_req(request: HttpRequest):    #login korisnik
+#Dejan Draskovic
+#view for logging user in
+def login_req(request: HttpRequest):
     form = AuthenticationForm(request=request, data=request.POST or None)
     if form.is_valid():
         username = form.cleaned_data['username']
@@ -226,11 +227,14 @@ def login_req(request: HttpRequest):    #login korisnik
     }
     return render(request, 'login.html', context)
 
-
+#Dejan Draskovic
+#view for logging user out
 def logout_req(request: HttpRequest):        #logout korisnik
     logout(request)
     return redirect('home')
 
+#Dejan Draskovic
+#view for registering new user and automatic log in
 def registration(request: HttpRequest):       #register korisnik
     form = KorisnikCreationForm(request.POST, request.FILES)
     if form.is_valid():
@@ -389,18 +393,20 @@ def updateProfile(request: HttpRequest, profile_id):
     context = {"profile" : profile, "form": updateForm }
     return render(request, 'updateProfile.html', context)
 
+#Dejan Draskovic
+#view for testing on questions made for chosen article
 @login_required(login_url='login')
-def test(request: HttpRequest, article_id):     #view za testiranje na pitanjima za clanak
+def test(request: HttpRequest, article_id):
     article = Article.objects.get(pk=article_id)
     korisnik = Korisnik.objects.get(pk=request.user.id)
-    forms_questions = []               #forma za svako pitanje
-    questions = Question.objects.filter(Q(articleId__exact=article_id))   #sva pitanja za izabrani clanak
-    for count, question in enumerate(questions):                 #formiranje svih formi pitanja
+    forms_questions = []               #form for each question
+    questions = Question.objects.filter(Q(articleId__exact=article_id))   #all questions for chosen article
+    for count, question in enumerate(questions):                 #generatic form for each question
         forms_questions.append(Testing(request.POST or None))
         forms_questions[count].change(question.text, question.answer1, question.answer2, question.answer3, question.answer4, "q"+str(count))
 
     valid_forms = True
-    for form in forms_questions:     #provera da li su sve forme validne
+    for form in forms_questions:     #checking if all forms are valid
         if form.is_valid():
             continue
         valid_forms = False
@@ -410,16 +416,16 @@ def test(request: HttpRequest, article_id):     #view za testiranje na pitanjima
     all_points = 0
     if valid_forms:
         if request.method == 'POST':
-            for count, question in enumerate(questions):   #racunanje broja osvojenih poena
+            for count, question in enumerate(questions):   #calculating points
                 choice = int(forms_questions[count].cleaned_data["q"+str(count)])
-                if question.correct == choice:             #ako je tacan odgovor dodavanje poena
+                if question.correct == choice:             #adding points for correct answer
                     points += question.points
                 all_points += question.points
             grade = points * 100 / all_points
             oldGrade = KorisnikArticleGrade.objects.filter(articleId__exact=article, korisnikId__exact=korisnik)
             if oldGrade:
-                oldGrade.delete()                   #brisanje stare ocene na artiklu ako se korisnik vec testirao
-            newGrade = KorisnikArticleGrade.objects.create(articleId=article, korisnikId=korisnik, grade=grade)    #upisivanje ocene korisnika na artiklu
+                oldGrade.delete()                   #deletin old grade if already took test on this article
+            newGrade = KorisnikArticleGrade.objects.create(articleId=article, korisnikId=korisnik, grade=grade)    #saving new grade
             newGrade.save()
 
             context = {
@@ -435,9 +441,10 @@ def test(request: HttpRequest, article_id):     #view za testiranje na pitanjima
     }
     return render(request, 'test.html', context)
 
-
+#Dejan Draskovic
+#view for creating a comment on chosen article
 @login_required(login_url='login')
-def makecomment(request: HttpRequest, article_id):        #view for creating comment
+def makecomment(request: HttpRequest, article_id):
     comment_form = CommentForm(request.POST or None)        #creating form to write comment
 
     if comment_form.is_valid():
@@ -455,17 +462,20 @@ def makecomment(request: HttpRequest, article_id):        #view for creating com
     }
     return render(request, 'makecomment.html', context)
 
-
+#Dejan Draskovic
+#view for deleting comment on chosen article
 @login_required(login_url='login')
-def deletecomment(request: HttpRequest, comment_id):        #view for deleting comment
+def deletecomment(request: HttpRequest, comment_id):
     comment = Comment.objects.get(pk=comment_id)            #finding comment for deleting
     article = Article.objects.get(pk=comment.articleId.articleId)           #finding article to redirect to
     comment.delete()
     return redirect('article', article.articleId)
 
+#Dejan Draskovic
+#view for creating new category
 @login_required(login_url="login")
-def create_category(request:HttpRequest):       #view for creating category
-    form = CategoryForm(request.POST or None)
+def create_category(request:HttpRequest):
+    form = CategoryForm(request.POST or None)    #creating new form for category
 
     if form.is_valid():
         name = form.cleaned_data["name"]
