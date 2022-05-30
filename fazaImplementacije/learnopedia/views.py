@@ -149,6 +149,8 @@ def article(request: HttpRequest, article_id):
     deletebutton = False
     if (request.user.is_authenticated and (korisnik.isModerator == 1 or korisnik.isAdministrator == 1)):         #allowing moderators and admins to delet comments
         deletebuttom = True
+    questions = Question.objects.filter(articleId=article);
+    num_questions = questions.count()       #gettin number of all questions
 
     articlesFromAuthor = Article.objects.filter(korisnikId__exact=article.korisnikId).order_by('-numOfLikes') #we sort it by likes
 
@@ -171,7 +173,7 @@ def article(request: HttpRequest, article_id):
     if request.user.is_authenticated:
         userLiked = KorisnikLikedArticle.objects.filter(korisnikId__exact=request.user).filter(articleId__exact=article_id).count() > 0
 
-    context = {"article" : article, "totalLikes": totalLikes, "categoriesToShow" : categoriesToShow, "threeArticles" : threeArticles, "userLiked" : userLiked, "comments": comments, "korisnik":korisnik, "deletebutton": deletebutton}
+    context = {"article" : article, "totalLikes": totalLikes, "categoriesToShow" : categoriesToShow, "threeArticles" : threeArticles, "userLiked" : userLiked, "comments": comments, "korisnik":korisnik, "deletebutton": deletebutton, "num_questions": num_questions}
 
     return render(request, 'article.html', context)
 

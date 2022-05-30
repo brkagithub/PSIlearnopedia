@@ -42,13 +42,17 @@
           </div>
           {% if user.is_authenticated %}
               {% if article.korisnikId != user %}
-                  <a href={% url 'test' article.articleId %}
-                    ><button class="btn btn-light">Test yourself</button></a
-                  >
+                  {% if num_questions > 0 %}
+                    <a href={% url 'test' article.articleId %}>
+                        <button class="btn btn-light">Test yourself</button>
+                    </a>
+                      {% endif %}
+
               {% else %}
-                  <a href={% url 'questionUpdate' article.articleId %}
-                    ><button class="btn btn-light">Update questions</button></a
-                  >
+                  {% if num_questions > 0 %}
+                    <a href={% url 'questionUpdate' article.articleId %}
+                    ><button class="btn btn-light">Update questions</button></a>
+                      {% endif %}
                   <a href={% url 'makequestion' article.articleId %}
                     ><button class="btn btn-light">Add questions</button></a
                   >
