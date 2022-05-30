@@ -105,6 +105,7 @@
             {% endif %}
             </div>
             {% endif %}
+
           </div>
         </div>
         <div id="author" class="author col-12 col-lg-3">
@@ -131,23 +132,22 @@
                 <a href={% url 'deleteArticle' article.articleId %}><button class="btn btn-danger mt-3">Disapprove article</button></a>
                 {% endif %}
             {% endif %}
+
         </div>
-
-
-
-
-        <div class="row textAlign backgroundDarkBlue">
+        <div class="textLeft col-12 col-lg-9">
+        <h2>Comments</h2>
           {% for comment in comments %}
-              <div class="col-12 offset-0 offset-lg-2 col-lg-5">
                   <div class="card m-3" >
-                    <div class="card-body" style="text-align: left">
-                        {% if comment.korisnikId.profilePic %}
-                            <a href={% url 'profile' article.korisnikId.id %}> <img src="{{ comment.korisnikId.profilePic.url }}" class="profilePic rounded" alt="..." /> </a>
-                        {% endif %}
-                        <div class="flex">
-                            <h5 class="card-title">{{ comment.text }}</h5>
+                    <div class="card-body d-flex" style="text-align: left">
+                        <div>
+                            {% if comment.korisnikId.profilePic %}
+                                <a href={% url 'profile' article.korisnikId.id %}> <img src="{{ comment.korisnikId.profilePic.url }}" class="profilePic rounded" alt="..." /> </a>
+                            {% endif %}
+                            <a class="linkNoDeco" href={% url 'profile' article.korisnikId.id %}><p class="card-text card-author">By {{ comment.korisnikId.username }}</p></a>
                         </div>
-                        <a class="linkNoDeco" href={% url 'profile' article.korisnikId.id %}><p class="card-text card-author">By {{ comment.korisnikId.username }}</p></a>
+
+                            <div class="card-text" style="flex-grow: 1; padding-left: 10px">{{ comment.text }}</div>
+
                     </div>
                     {% if comment.korisnikId.pk == korisnik.pk%}
                     <a href="{%url 'deletecomment' comment.commentId %}"  class="linkNoDeco">
@@ -163,8 +163,8 @@
                     {% endif %}
 
                   </div>
-              </div>
           {% endfor %}
+        </div>
       </div>
 
 
