@@ -148,7 +148,8 @@ def article(request: HttpRequest, article_id):
     korisnik = request.user
     deletebutton = False
     if (request.user.is_authenticated and (korisnik.isModerator == 1 or korisnik.isAdministrator == 1)):         #allowing moderators and admins to delet comments
-        deletebuttom = True
+        deletebutton = True
+
     questions = Question.objects.filter(articleId=article);
     num_questions = questions.count()       #gettin number of all questions
 
