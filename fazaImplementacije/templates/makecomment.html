@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
 <!doctype html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
+<!-- Dejan Draskovic -->
 <head>
     {% load static %}
 
 </head>
 <body>
     {% block content %}
-
+        <div style="text-align: center">
         <form method="POST">
             {% csrf_token %}
             <div>
@@ -25,6 +26,8 @@
                 {% csrf_token %}
                 <input class="btn btn-danger" type="submit" value="Cancel"></input>
             </form>
+        </div>
+
 
 	{% endblock %}
 </body>
