@@ -24,6 +24,7 @@ class UpdateUserForm(Form):
     profilePic = forms.ImageField(required=False)
     description = forms.CharField(widget=forms.Textarea, label="Description")
 
+#Rasa Stojanovic
 class SearchForm(Form):
     filter = forms.CharField(max_length=50)
 
@@ -43,7 +44,7 @@ class CategoryForm(ModelForm):
         model = Category
         fields = ['name', 'description']
 
-
+#Rasa Stojanovic
 class QuestionUpdateForm(Form):
     Points = forms.IntegerField()
     Question = forms.CharField(max_length=50)
@@ -59,7 +60,7 @@ class QuestionUpdateForm(Form):
         answer = 'Answer'+str(odgovor)
         print(answer)
 
-
+#Rasa Stojanovic
 class QuestionForm(Form):
     Points = forms.IntegerField()
     Question = forms.CharField(max_length=50)
@@ -96,7 +97,7 @@ class createArticle(Form):
             
         self.fields["letters"] = forms.MultipleChoiceField(choices=choices,label="",required=False,widget = forms.CheckboxSelectMultiple)
 
-
+#Rasa Stojanovic
 class updateArticle(Form):
     title = forms.CharField(max_length=50, required=True)
     content = forms.CharField(widget=SummernoteWidget(), required=True)
