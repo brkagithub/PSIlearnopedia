@@ -26,7 +26,9 @@ class UpdateUserForm(Form):
 
 #Rasa Stojanovic
 class SearchForm(Form):
-    filter = forms.CharField(max_length=50)
+    validatedArticlesOnly = forms.BooleanField(required=False)
+    filter = forms.CharField(max_length=50, required=False)
+
 
 #Dejan Draskovic
 #form for creating new comment

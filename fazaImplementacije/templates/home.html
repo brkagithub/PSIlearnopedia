@@ -96,8 +96,12 @@
           </ul>
             <form method="post">
                 {% csrf_token %}
-                {{ searchform }}
-                <input type="submit" value="Search">
+                <div>ValidatedArticlesOnly {{ searchform.validatedArticlesOnly }}</div>
+
+                <div>
+                    Filter: {{ searchform.filter }}
+                    <input type="submit" value="Search">
+                </div>
             </form>
         </div>
       </nav>
@@ -147,8 +151,12 @@
           </ul>
             <form method ="post">
                 {% csrf_token %}
-                {{ searchform }}
-                <input type="submit" value="Search">
+                <div>ValidatedArticlesOnly {{ searchform.validatedArticlesOnly }}</div>
+
+                <div>
+                    Filter: {{ searchform.filter }}
+                    <input type="submit" value="Search">
+                </div>
             </form>
         </div>
       </nav>

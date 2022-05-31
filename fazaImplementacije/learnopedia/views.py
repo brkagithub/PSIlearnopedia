@@ -25,7 +25,15 @@ def index(request: HttpRequest):
         articles = []
         if searchform.is_valid(): #Izvlacenje informacija iz search forme i filtriranje
             term = searchform.cleaned_data["filter"]
-            articles = Article.objects.filter(Q(textContent__contains=term) | Q(title__contains=term) | Q(korisnikId__username__contains=term) )
+            validated = searchform.cleaned_data["validatedArticlesOnly"]
+            if(validated == True and term != ''):
+                articles = Article.objects.filter( (Q(textContent__contains=term) | Q(title__contains=term) | Q(korisnikId__username__contains=term)) & Q(isValidated=1) )
+            elif (validated == False and term != ''):
+                articles = Article.objects.filter(Q(textContent__contains=term) | Q(title__contains=term) | Q(korisnikId__username__contains=term))
+            elif(validated == True and term == ''):
+                articles = Article.objects.filter(isValidated=1)
+            elif(validated == False and term == ''):
+                articles = Article.objects.order_by('-numOfLikes')
         else:
             articles = Article.objects.order_by('-numOfLikes')
         searchform = SearchForm()
