@@ -21,11 +21,19 @@ from django import forms
 # View za home stranicu, vraca je renderovanu sa filtriranim clancima preko searcha ili svim clancima poredjanih
 # Po broju lajkova opadajuce (popularnosti)
 def index(request: HttpRequest):
-        searchform = SearchForm(request.POST or None)
+        searchform = SearchForm(request.POST or None) #Klasicna search forma
         articles = []
-        if searchform.is_valid():
+        if searchform.is_valid(): #Izvlacenje informacija iz search forme i filtriranje
             term = searchform.cleaned_data["filter"]
-            articles = Article.objects.filter(Q(textContent__contains=term) | Q(title__contains=term) | Q(korisnikId__username__contains=term) )
+            validated = searchform.cleaned_data["validatedArticlesOnly"]
+            if(validated == True and term != ''):
+                articles = Article.objects.filter( (Q(textContent__contains=term) | Q(title__contains=term) | Q(korisnikId__username__contains=term)) & Q(isValidated=1) )
+            elif (validated == False and term != ''):
+                articles = Article.objects.filter(Q(textContent__contains=term) | Q(title__contains=term) | Q(korisnikId__username__contains=term))
+            elif(validated == True and term == ''):
+                articles = Article.objects.filter(isValidated=1)
+            elif(validated == False and term == ''):
+                articles = Article.objects.order_by('-numOfLikes')
         else:
             articles = Article.objects.order_by('-numOfLikes')
         searchform = SearchForm()
@@ -35,10 +43,11 @@ def index(request: HttpRequest):
         }
         return render(request, 'home.html', context)
 
+
 # Marko Brkic i Rasa Stojanovic
 # View za prikaz kategorije
 def category(request: HttpRequest, category_id):
-    articles = []
+    articles = [] #Prikazivanje artikla koji imaju odredjenu kategoriju
     ArticlesWithCategory = ArticleCategory.objects.filter(categoryId=category_id)
     for ArticleWithCategory in ArticlesWithCategory:
         articles.append(ArticleWithCategory.articleId)
@@ -49,19 +58,20 @@ def category(request: HttpRequest, category_id):
     }
     return render(request, 'home.html',context)
 
-
+# Rasa Stojanovic
+# View za update pitanja
 cnt=0
 @login_required(login_url='login')
 def UpdateQuestions(request: HttpRequest, article_id):
-    korisnik_current = request.user
+    korisnik_current = request.user #Provera da li korisnik ima pravo da updatuje pitanja ako pristupa direktno preko url
     article = Article.objects.get(articleId=article_id)
     owner = Korisnik.objects.get(pk=article.korisnikId.pk)
     if (owner.pk != korisnik_current.pk and korisnik_current.isModerator == 0 and korisnik_current.isAdministrator == 0):
         return redirect('home')
 
-    updateform = QuestionUpdateForm(request.POST or None)
+    updateform = QuestionUpdateForm(request.POST or None) #Izvlacenje informacija iz forme i upisivanje u odredjeno pitanje
     global cnt
-    if( request.method == 'GET'):
+    if( request.method == 'GET'): #Ako smo prvi put pritupili stranici stavljamo cnt na nula i prikazujemo prvo pitanje spremno za update preko forme
         cnt = 0
     if( request.method == 'POST'):
 
@@ -87,14 +97,14 @@ def UpdateQuestions(request: HttpRequest, article_id):
             if button == 'Finish':  # if finished making questions go to article
                 return redirect('article', article_id)
 
-    NumOfQuestions = Question.objects.filter(articleId=article_id).count()
-    if(NumOfQuestions > cnt):
-        question = Question.objects.filter(articleId=article_id)[cnt]
+    NumOfQuestions = Question.objects.filter(articleId=article_id).count() #Broj pitanja koji postoje vezanih za dati artikal
+    if(NumOfQuestions > cnt): #Ako je cnt manji od ukupnog broj pitanja sledecu formu popunjavamo sledecim odgovarajucim pitanjem koje menjamo
+        question = Question.objects.filter(articleId=article_id)[cnt] #Popunjavanje sledece forme unapred sledecim pitanjem
         a1 = question.answer1; a2 = question.answer2; a3 = question.answer3; a4 = question.answer4;
         q = question.text;  odgovor = question.correct; points = question.points
         updateform = QuestionUpdateForm(initial= {'Question':q,'Answer1':a1,'Answer2':a2,'Answer3':a3,'Answer4':a4,'choice': odgovor, 'Points':points})
     else:
-        updateform = QuestionUpdateForm()
+        updateform = QuestionUpdateForm() #Nema vise pitanja za update i prikazujemo praznu formu
     context = {
         'cnt': (cnt + 1) ,
         'NumOfQuestions': NumOfQuestions,
@@ -104,17 +114,18 @@ def UpdateQuestions(request: HttpRequest, article_id):
     return render(request, 'questionUpdate.html', context)
 
 
-
+#Rasa Stojanovic
+#View za pravljenje pitanja
 @login_required(login_url='login')
 def makequestions(request: HttpRequest, article_id):
-    korisnik_current = request.user
+    korisnik_current = request.user  #Provera da li korisnik ima pravo da pravi pitanja ako pristupa direktno preko url
     article = Article.objects.get(articleId=article_id)
     owner = Korisnik.objects.get(pk=article.korisnikId.pk)
     if(owner.pk != korisnik_current.pk and korisnik_current.isModerator==0 and korisnik_current.isAdministrator==0):   # proverava da li je trenutni user stvarno vlasnik artikla, ili moderator ili admin
         return redirect('home')
 
 
-    questionform = QuestionForm(request.POST or None)
+    questionform = QuestionForm(request.POST or None)  #Klasicno skupljanje informacije iz forme i pravljenje novog pitanja
     if(questionform.is_valid()):
         textquestion = questionform.cleaned_data['Question']
         answer1 = questionform.cleaned_data['Answer1']
@@ -129,8 +140,8 @@ def makequestions(request: HttpRequest, article_id):
         question.save()
         questionform = QuestionForm()
 
-        button = request.POST.get("makequestion")
-        if button == 'Finish':                          #if finished making questions go to article
+        button = request.POST.get("makequestion") #Ako je pritisnuto dugme finish moramo se vratiti na strancu artikla
+        if button == 'Finish':
             return redirect('article', article_id)
 
 
@@ -195,10 +206,10 @@ def articleLike(request: HttpRequest, article_id): #view for liking an article
     return redirect('article', article_id)
 
 
-# Marko Brkic
+# Marko Brkic i Rasa Stojanovic
 # view for seeing all the categories, you can click one to filter articles to match only that one category
 def categories(request: HttpRequest):
-    searchcategory = SearchCategoryForm(request.POST or None)
+    searchcategory = SearchCategoryForm(request.POST or None) #Skupljanje informacija iz search forme i filtriranje odredjenih kategorija
     if searchcategory.is_valid():
         term = searchcategory.cleaned_data['filter']
         categories = Category.objects.filter(Q(name__contains = term) | Q(description__contains = term))
@@ -339,6 +350,7 @@ def deleteArticle(request: HttpRequest, article_id):
         comment.delete()
     article.delete()
     return redirect('home')
+
 # Marko Brkic
 # view for approving an article by a moderator
 @login_required(login_url='login')
@@ -491,6 +503,7 @@ def create_category(request:HttpRequest):
     }
     return render(request, "create_category.html", context)
 
+
 @csrf_exempt
 @login_required(login_url='login')
 def kreiraj_article(request: HttpRequest):
@@ -524,7 +537,8 @@ def kreiraj_article(request: HttpRequest):
 
     return render(request, 'create_article.html', context)
 
-
+#Rasa Stojanovic
+#View za updatovanje artikla
 @login_required(login_url='login')
 def update_article(request: HttpRequest,article_id):
     korisnik_current = request.user #Identifikacija i protekcija protiv nasilov URL ulaska

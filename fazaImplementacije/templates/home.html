@@ -96,15 +96,19 @@
           </ul>
             <form method="post">
                 {% csrf_token %}
-                {{ searchform }}
-                <input type="submit" value="Search">
+                <div>ValidatedArticlesOnly {{ searchform.validatedArticlesOnly }}</div>
+
+                <div>
+                    Filter: {{ searchform.filter }}
+                    <input type="submit" value="Search">
+                </div>
             </form>
         </div>
       </nav>
       {% else %}
             <nav class="navbar navbar-expand-sm backgroundDarkBlue">
         <a class="navbar-brand" href={% url 'home' %}>
-          <img src="{% static 'logo.jpg' %}" alt="Learnopedia" class="logo" />
+          <img src="{% static 'logo.png' %}" alt="Learnopedia" class="logo" />
         </a>
         <button
           class="navbar-toggler"
@@ -147,8 +151,12 @@
           </ul>
             <form method ="post">
                 {% csrf_token %}
-                {{ searchform }}
-                <input type="submit" value="Search">
+                <div>ValidatedArticlesOnly {{ searchform.validatedArticlesOnly }}</div>
+
+                <div>
+                    Filter: {{ searchform.filter }}
+                    <input type="submit" value="Search">
+                </div>
             </form>
         </div>
       </nav>
@@ -188,7 +196,7 @@
               {% if article.previewPic %}
               <img src="{{ article.previewPic.url }}" class="card-img-top" alt="...">
               {% else %}
-               <img src="logo.jpg" class="card-img-top" alt="...">
+               <img src="static/logo.png" class="card-img-top" alt="...">
               {% endif %}
               <div class="card-body">
               <div class="flex">
