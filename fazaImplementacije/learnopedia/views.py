@@ -527,10 +527,11 @@ def update_article(request: HttpRequest,article_id):
         if updateForm.is_valid():
             title = updateForm.cleaned_data['title'] #Uzimanje iz forme
             content = updateForm.cleaned_data['content']
+            tekstRaw = re.sub('<[^>]*>', '', content)
             pic = updateForm.cleaned_data['previewPic']
             categoriesPk = updateForm.cleaned_data['categories']
 
-            article.title = title; article.textContent = content; article.previewPic = pic #Update artikla
+            article.title = title; article.textContent = content; article.previewPic = pic; article.textContentRaw=tekstRaw #Update artikla
             article.save()
 
             ArticlesWithCategories = ArticleCategory.objects.filter(articleId=article_id) #Brisanje trenutnih objekata ArticleCategory vezanih za dati artikal
