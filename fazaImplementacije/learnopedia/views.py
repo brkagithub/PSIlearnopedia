@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import *
-from django.http import HttpRequest
+from django.http import HttpRequest, JsonResponse
 from .models import *
 from django.db.models import Q
 from django.shortcuts import render, redirect
@@ -342,15 +342,16 @@ def deleteArticle(request: HttpRequest, article_id):
 # Marko Brkic
 # view for approving an article by a moderator
 @login_required(login_url='login')
-def validateArticle(request: HttpRequest, article_id):
-    korisnik_current = request.user
-    if (korisnik_current.isModerator == 0 and korisnik_current.isAdministrator == 0):  # provera da li je administrator ili moderator
-        return redirect('home')
-
-    article = Article.objects.get(pk=article_id)
-    article.isValidated=1
-    article.save()
-    return redirect('article', article_id)
+def validateArticle(request: HttpRequest):
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+    print(is_ajax)
+    if is_ajax:
+        if request.method == 'POST':
+            article_id = json.load(request).get('articleId')
+            article = Article.objects.get(pk=article_id)
+            article.isValidated = 1
+            article.save()
+            return JsonResponse({}, status=200)
 
 # Marko Brkic
 # view for deleting a category from an article, only shown to a moderator/admin, its called by clicking on a category
