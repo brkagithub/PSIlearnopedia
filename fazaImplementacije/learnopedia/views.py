@@ -581,10 +581,12 @@ def update_article(request: HttpRequest,article_id):
         for ArticleWithCategory in ArticlesWithCategory:
             if ArticleWithCategory.categoryId.pk not in categories:
                 categories.append(ArticleWithCategory.categoryId.pk)
+
         updateForm = updateArticle(selectedCategories=categories,initial={'title':article.title,'content':article.textContent,'previewPic':article.previewPic}) #Kontrukcija
 
 
     context = {
         'form': updateForm,
+        'articleId': article_id,
     }
     return render(request, 'articleUpdate.html', context)
