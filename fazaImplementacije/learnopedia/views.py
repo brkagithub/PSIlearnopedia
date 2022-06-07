@@ -17,6 +17,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 import re
 from django import forms
 
+# Testira Dejan
 # Marko Brkic i Rasa Stojanovic
 # View za home stranicu, vraca je renderovanu sa filtriranim clancima preko searcha ili svim clancima poredjanih
 # Po broju lajkova opadajuce (popularnosti)
@@ -44,6 +45,7 @@ def index(request: HttpRequest):
         return render(request, 'home.html', context)
 
 
+# Testira Ilija
 # Marko Brkic i Rasa Stojanovic
 # View za prikaz kategorije
 def category(request: HttpRequest, category_id):
@@ -58,6 +60,7 @@ def category(request: HttpRequest, category_id):
     }
     return render(request, 'home.html',context)
 
+# Testira Brka
 # Rasa Stojanovic
 # View za update pitanja
 cnt=0
@@ -114,6 +117,7 @@ def UpdateQuestions(request: HttpRequest, article_id):
     return render(request, 'questionUpdate.html', context)
 
 
+# Testira Brka
 #Rasa Stojanovic
 #View za pravljenje pitanja
 @login_required(login_url='login')
@@ -151,6 +155,7 @@ def makequestions(request: HttpRequest, article_id):
     }
     return render(request, 'makequestions.html', context)
 
+# Testira Rasa
 # Marko Brkic i Dejan Draskovic
 # view for viewing an article, shows the article, its author, its comments, number of likes and articles from the same author
 def article(request: HttpRequest, article_id):
@@ -189,6 +194,7 @@ def article(request: HttpRequest, article_id):
 
     return render(request, 'article.html', context)
 
+# Testira Ilija
 # Marko Brkic
 # view for liking or disliking an article based on whether the user has liked it already
 @login_required(login_url='login')
@@ -206,6 +212,7 @@ def articleLike(request: HttpRequest, article_id): #view for liking an article
     return redirect('article', article_id)
 
 
+# Testira Dejan
 # Marko Brkic i Rasa Stojanovic
 # view for seeing all the categories, you can click one to filter articles to match only that one category
 def categories(request: HttpRequest):
@@ -221,6 +228,7 @@ def categories(request: HttpRequest):
             }
     return render(request, 'categories.html', context)
 
+# Testira Rasa
 #Dejan Draskovic
 #view for logging user in
 def login_req(request: HttpRequest):
@@ -239,12 +247,14 @@ def login_req(request: HttpRequest):
     }
     return render(request, 'login.html', context)
 
+# Ovaj se ne testira
 #Dejan Draskovic
 #view for logging user out
 def logout_req(request: HttpRequest):        #logout korisnik
     logout(request)
     return redirect('home')
 
+# Testira Brka
 #Dejan Draskovic
 #view for registering new user and automatic log in
 def registration(request: HttpRequest):       #register korisnik
@@ -262,6 +272,7 @@ def registration(request: HttpRequest):       #register korisnik
 def returnCategory(articleCategory: ArticleCategory):
     return articleCategory.categoryId
 
+# Testira rasa
 # Marko Brkic
 # View for the profile, shows the user info and their 5 most popular articles and the user's best 5 grades by category
 def profile(request: HttpRequest, profile_id):
@@ -299,6 +310,7 @@ def profile(request: HttpRequest, profile_id):
     context = {"profile" : profile, "top5Articles" : top5Articles, "top5Categories" : top5Categories}
     return render(request, 'profile.html', context)
 
+# Testira ilija
 # Marko Brkic
 #view for banning a user - deletes everything the user ever made (USE WITH CAUTION)
 @login_required(login_url='login')
@@ -327,6 +339,7 @@ def ban(request: HttpRequest, profile_id):
     user.delete()
     return redirect('home')
 
+# Testira Dejan
 # Marko Brkic
 # view for deleting an article - deletes everything related to it too
 @login_required(login_url='login')
@@ -351,6 +364,7 @@ def deleteArticle(request: HttpRequest, article_id):
     article.delete()
     return redirect('home')
 
+# Testira Ilija
 # Marko Brkic
 # view for approving an article by a moderator
 @login_required(login_url='login')
@@ -365,6 +379,7 @@ def validateArticle(request: HttpRequest):
             article.save()
             return JsonResponse({}, status=200)
 
+# Testira Rasa
 # Marko Brkic
 # view for deleting a category from an article, only shown to a moderator/admin, its called by clicking on a category
 @login_required(login_url='login')
@@ -380,6 +395,7 @@ def deleteCategory(request: HttpRequest, article_id, category_id):
     articleCategory.delete()
     return redirect('article', article_id)
 
+# Testira Dejan
 # Marko Brkic
 # view for updating a user's profile
 @login_required(login_url='login')
@@ -407,6 +423,7 @@ def updateProfile(request: HttpRequest, profile_id):
     context = {"profile" : profile, "form": updateForm }
     return render(request, 'updateProfile.html', context)
 
+# Testira brka
 #Dejan Draskovic
 #view for testing on questions made for chosen article
 @login_required(login_url='login')
@@ -455,6 +472,7 @@ def test(request: HttpRequest, article_id):
     }
     return render(request, 'test.html', context)
 
+# Testira brka
 #Dejan Draskovic
 #view for creating a comment on chosen article
 @login_required(login_url='login')
@@ -476,6 +494,7 @@ def makecomment(request: HttpRequest, article_id):
     }
     return render(request, 'makecomment.html', context)
 
+# Testira Rasa
 #Dejan Draskovic
 #view for deleting comment on chosen article
 @login_required(login_url='login')
@@ -485,6 +504,7 @@ def deletecomment(request: HttpRequest, comment_id):
     comment.delete()
     return redirect('article', article.articleId)
 
+# Testira ilija
 #Dejan Draskovic
 #view for creating new category
 @login_required(login_url="login")
@@ -504,6 +524,8 @@ def create_category(request:HttpRequest):
     return render(request, "create_category.html", context)
 
 
+# Testira dejan
+# Ilija Markovic
 @csrf_exempt
 @login_required(login_url='login')
 def kreiraj_article(request: HttpRequest):
@@ -537,6 +559,7 @@ def kreiraj_article(request: HttpRequest):
 
     return render(request, 'create_article.html', context)
 
+# Testira Ilija
 #Rasa Stojanovic
 #View za updatovanje artikla
 @login_required(login_url='login')
