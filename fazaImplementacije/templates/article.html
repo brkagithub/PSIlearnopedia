@@ -166,7 +166,7 @@
                     <div class="card-body d-flex" style="text-align: left">
                         <div>
                             {% if comment.korisnikId.profilePic %}
-                                <a href={% url 'profile' article.korisnikId.id %}> <img src="{{ comment.korisnikId.profilePic.url }}" class="profilePic rounded" alt="..." /> </a>
+                                <a href={% url 'profile' comment.korisnikId.id %}> <img src="{{ comment.korisnikId.profilePic.url }}" class="profilePic rounded" alt="..." /> </a>
                             {% endif %}
                             <a class="linkNoDeco" href={% url 'profile' article.korisnikId.id %}><p class="card-text card-author">By {{ comment.korisnikId.username }}</p></a>
                         </div>
