@@ -25,6 +25,13 @@ def create_question(kor, choice, answer1, answer2,
     return Question(correct=choice,answer1=answer1,answer2=answer2,
        answer3=answer3,answer4=answer4,articleId=article,text=textquestion,points=points)
 
+def create_category(name, desc):
+    return Category.objects.create(name=name,description=desc)
+
+def create_ArticleCategory(article, category):
+    return ArticleCategory.objects.create(articleId=article, categoryId=category)
+
+
 # Marko Brkic
 class MakeCommentTest(TestCase):
     def test_makecomment(self):
@@ -107,6 +114,7 @@ class TestingTest(TestCase):
 
         self.assertContains(responseTest, 'mali ste 50')
 
+#Marko Brkic
 class UpdateQuestionsTest(TestCase):
     def test_UpdateQuestions(self):
         kor = create_mod('tasha')
@@ -145,3 +153,80 @@ class UpdateQuestionsTest(TestCase):
         responseTest = self.client.get(urlTest)
         self.assertContains(responseTest, 'Koliko je 4+3')
         self.assertContains(responseTest, 'Koliko je 2+3')
+
+#Dejan Draskovic
+class index_view_test(TestCase):
+    def test_search(self):
+        kor = create_mod('tasha')
+        logged_in = self.client.login(username='tasha', password='T@sh@1234')
+        clanak = create_article(kor)
+        response = self.client.post("", data={
+            "filter": "clanak",
+            "validatedArticlesOnly": False,
+        })
+        self.assertContains(response, "ovo")
+
+
+#Dejan Draskovic
+class updateProfile_view_test(TestCase):
+    def test_update_profile(self):
+        kor = create_mod('tasha')
+        logged_in = self.client.login(username='tasha', password='T@sh@1234')
+
+        response1 = self.client.post("/updateProfile/"+str(kor.id), data={
+            "username": "Dejan",
+            "firstName": "Dejan",
+            "lastName": "Draskovic",
+            "description": "New description",
+        })
+
+        response2 = self.client.get("/profile/"+str(kor.id))
+        self.assertContains(response2, "Draskovic")
+
+
+#Dejan Draskovic
+class categories_view_test(TestCase):
+    def test_categories_filter(self):
+        kor = create_mod('tasha')
+        logged_in = self.client.login(username='tasha', password='T@sh@1234')
+        category = create_category("testiranje", "sluzi za testiranje")
+        article = create_article(kor)
+        ac = create_ArticleCategory(article, category)
+
+        response1 = self.client.post("/categories", data={
+            "filter": "test"
+        })
+        self.assertContains(response1, "testiranje")
+
+        response2 = self.client.get("/category/" + str(category.categoryId))
+        self.assertContains(response2, "clanak")
+
+
+
+#Dejan Draskovic
+class kreiraj_article_view_test(TestCase):
+    def test_create_article(self):
+        kor = create_mod('tasha')
+        logged_in = self.client.login(username='tasha', password='T@sh@1234')
+
+        response1 = self.client.post("/create_article", data={
+            "title": "New article",
+            "content": "New content"
+        })
+
+        response2 = self.client.get("")
+        self.assertContains(response2, "article")
+
+
+#Dejan Draskovic
+class deleteArticle_view_test(TestCase):
+    def test_delete_article(self):
+        kor = create_mod('tasha')
+        logged_in = self.client.login(username='tasha', password='T@sh@1234')
+        article = create_article(kor)
+
+        response1 = self.client.get("/deleteArticle/"+str(article.articleId))
+        response2 = self.client.get("")
+        self.assertNotContains(response2, "clanak")
+
+
