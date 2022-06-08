@@ -1,12 +1,32 @@
 from django.test import TestCase
 from .models import *
 from django.contrib.auth.models import Group
+
 from django.contrib import auth
 from django.core.files.uploadedfile import SimpleUploadedFile
+
 # Create your tests here.
 
 # fixtures
 
+
+def create_category(name, desc):
+    return Category.objects.create(name=name,description=desc)
+
+def create_article(kor):
+    return Article.objects.create(title="Test article", slug="test", isValidated=1,
+    textContent="ovo je clanak", textContentRaw="ovo je clanak", korisnikId=kor)
+
+def create_mod2(username):
+    kor = Korisnik(username=username,isModerator=1)
+    kor.set_password('Tash@1234')
+    kor.save()
+    return kor
+
+
+def create_likedArticle(article,user):
+    return KorisnikLikedArticle.objects.create(articleId=article, korisnikId=user)
+    
 def create_mod(username):
     kor = Korisnik(username=username)
     kor.set_password('T@sh@1234')
@@ -15,6 +35,7 @@ def create_mod(username):
     kor.save()
     kor.groups.add(group)
     return kor
+
 
 def create_article(kor):
     return Article.objects.create(title="Test article", slug="test", isValidated=1,
@@ -228,5 +249,101 @@ class deleteArticle_view_test(TestCase):
         response1 = self.client.get("/deleteArticle/"+str(article.articleId))
         response2 = self.client.get("")
         self.assertNotContains(response2, "clanak")
+
+
+class category_test(TestCase):
+
+    def test_category(self):
+        category=create_category("family","family")
+        url_name="/category/"+str(category.categoryId)
+        response=self.client.get(url_name)
+        self.assertContains(response,"family")
+
+
+
+
+
+class likeArticle_test(TestCase):
+
+    def test_likeArticle(self):
+        kor = create_mod('tasha')
+        logged_in = self.client.login(username='tasha', password='T@sh@1234')
+        clanak = create_article(kor)
+        KorisnikLikedArticle=create_likedArticle(clanak,kor)
+        urlLikeArticle = "/article/" + str(clanak.articleId)
+
+        responseArticle = self.client.get(urlLikeArticle)
+        self.assertContains(responseArticle, '1')
+
+
+class validateArticle_test(TestCase):
+
+    def test_validateArticle(self):
+        kor = create_mod('tasha')
+        logged_in = self.client.login(username='tasha', password='T@sh@1234')
+        clanak = create_article(kor)
+        urlValidateArticle = "/article/" + str(clanak.articleId)
+
+        responseArticle = self.client.get(urlValidateArticle)
+        self.assertNotContains(responseArticle,'Approve article')
+
+class createCategory_test(TestCase):
+
+    def test_createCategor(self):
+        kor = create_mod('tasha')
+        logged_in = self.client.login(username='tasha', password='T@sh@1234')
+
+        urlcreateCategor = "/create_category/"
+
+        responseTest = self.client.post(urlcreateCategor, data={
+            'name': 'sport',
+            'description':'sport'
+        })
+
+        response=self.client.get("/categories")
+        self.assertContains(response, 'sport')
+
+
+class updateArticle_test(TestCase):
+
+    def test_updateArticle(self):
+        kor = create_mod('tasha')
+        logged_in = self.client.login(username='tasha', password='T@sh@1234')
+        clanak = create_article(kor)
+        urlUpdate="/articleUpdate/"+str(clanak.articleId)
+
+
+        responseTest = self.client.post(urlUpdate, data={
+            'title': 'Test article 1',
+            'content': 'ovo je clanak 1',
+
+        })
+
+        response = self.client.get("")
+        self.assertContains(response, 'ovo je clanak 1')
+
+
+class banUser_test(TestCase):
+
+    def test_banUser(self):
+        kor = create_mod('tasha')
+        clanak = create_article(kor)
+
+        kor2 = create_mod2('tasha2')
+        logged_in = self.client.login(username='tasha2', password='Tash@1234')
+
+        banUrl="/ban/"+str(kor.id)
+        response = self.client.get(banUrl)
+
+        response = self.client.get("")
+        self.assertNotContains(response, 'Test article')
+
+
+
+
+
+
+
+
 
 
