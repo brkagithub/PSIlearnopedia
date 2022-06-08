@@ -12,6 +12,10 @@ from django.forms import ModelForm, TextInput, EmailInput
 #Dejan Draskovic
 #form for registering new user
 class KorisnikCreationForm(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super(KorisnikCreationForm, self).__init__(*args, **kwargs)
+        self.fields['profilePic'].required = False
+
     class Meta:
         model = Korisnik
 
