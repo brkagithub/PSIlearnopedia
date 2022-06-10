@@ -526,6 +526,7 @@ def create_category(request:HttpRequest):
 
 # Testira dejan
 # Ilija Markovic
+#View za kreiranje artikla
 @csrf_exempt
 @login_required(login_url='login')
 def kreiraj_article(request: HttpRequest):
@@ -560,7 +561,7 @@ def kreiraj_article(request: HttpRequest):
     return render(request, 'create_article.html', context)
 
 # Testira Ilija
-#Rasa Stojanovic
+#Rasa Stojanovic i Ilija Markovic
 #View za updatovanje artikla
 @login_required(login_url='login')
 def update_article(request: HttpRequest,article_id):

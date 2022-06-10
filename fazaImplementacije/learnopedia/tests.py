@@ -314,7 +314,7 @@ class deleteArticle_view_test(TestCase):
         response2 = self.client.get("")
         self.assertNotContains(response2, "clanak")
 
-
+#Ilija Markovic
 class category_test(TestCase):
 
     def test_category(self):
@@ -326,7 +326,7 @@ class category_test(TestCase):
 
 
 
-
+#Ilija Markovic
 class likeArticle_test(TestCase):
 
     def test_likeArticle(self):
@@ -339,7 +339,7 @@ class likeArticle_test(TestCase):
         responseArticle = self.client.get(urlLikeArticle)
         self.assertContains(responseArticle, '1')
 
-
+#Ilija Markovic
 class validateArticle_test(TestCase):
 
     def test_validateArticle(self):
@@ -351,6 +351,7 @@ class validateArticle_test(TestCase):
         responseArticle = self.client.get(urlValidateArticle)
         self.assertNotContains(responseArticle,'Approve article')
 
+#Ilija Markovic
 class createCategory_test(TestCase):
 
     def test_createCategor(self):
@@ -367,7 +368,7 @@ class createCategory_test(TestCase):
         response=self.client.get("/categories")
         self.assertContains(response, 'sport')
 
-
+#Ilija Markovic
 class updateArticle_test(TestCase):
 
     def test_updateArticle(self):
@@ -386,7 +387,7 @@ class updateArticle_test(TestCase):
         response = self.client.get("")
         self.assertContains(response, 'ovo je clanak 1')
 
-
+#Ilija Markovic
 class banUser_test(TestCase):
 
     def test_banUser(self):
