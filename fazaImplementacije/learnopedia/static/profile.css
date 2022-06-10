@@ -1,0 +1,48 @@
+.row {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.card-body {
+  background-color: #1a2238;
+  margin: 0;
+}
+
+.card {
+  background-color: #1a2238;
+  border: 1px solid white;
+  min-height: 250px;
+}
+
+.card200px {
+  background-color: #1a2238;
+  border: 1px solid white;
+  min-height: 210px !important;
+}
+
+.profilePicDiv {
+  height: 100%;
+}
+
+.profilePic {
+  width: 100px;
+  height: 100px;
+}
+
+.textAlignLeft {
+  text-align: left;
+}
+
+.card-title {
+  margin-bottom: 0px;
+}
+
+p.card-text {
+  margin-top: 1px;
+}
+
+button {
+  background-color: white;
+  color: #1a2238;
+  padding: 5px;
+}

@@ -1,0 +1,116 @@
+.logo {
+  width: 75px;
+  height: 75px;
+}
+
+.textAlign {
+  text-align: center;
+}
+
+.verticalAlign {
+  vertical-align: middle;
+}
+
+.backgroundDarkBlue {
+  background-color: #1a2238;
+  color: #9daaf2;
+}
+
+.importantWord {
+  color: orange;
+  display: inline;
+}
+
+.nav-link {
+  color: white;
+}
+
+.active {
+  color: #9daaf2;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.frontPageQuote {
+  font-family: "Square Peg";
+}
+
+.btn-outline-secondary {
+  color: white;
+}
+
+.navbar-toggler-icon {
+  color: white;
+}
+
+.card {
+  min-height: 550px;
+  color: #1a2238;
+}
+
+.card-title {
+  text-align: left;
+  font-weight: bold;
+}
+
+.card-author {
+  text-align: left;
+  flex-basis: 100%;
+  width: 100%;
+}
+
+.card-desc {
+  text-align: left;
+}
+
+.card-img-top {
+  height: 300px;
+  width: auto;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+}
+
+.flexWrap {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.flexBody {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.flexCenter {
+  justify-content: center;
+  display: flex;
+}
+
+.flexStart {
+  justify-content: start;
+  display: flex;
+}
+
+.card-text {
+  color: #9daaf2;
+}
+
+.card-title {
+  color: #9daaf2;
+  text-align: center;
+}
+
+body {
+  height: 100%;
+  background-color: #1a2238;
+}
+
+.linkNoDeco {
+  text-decoration: none;
+}

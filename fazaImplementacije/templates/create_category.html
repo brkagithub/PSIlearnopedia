@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<!-- Dejan Draskovic -->
+<head>
+    {% load static %}
+
+</head>
+<body>
+    {% block content %}
+    <div style="text-align: center">
+        <form method="POST">
+            {% csrf_token %}
+                <div>
+                    Name:
+                </div>
+                <div>
+                    {{ category_form.name }}
+                </div>
+                <div>
+                    Description:
+                </div>
+                <div>
+                    {{ category_form.description }}
+                </div>
+
+            <br>
+            <input class="btn btn-light" type="submit" value="Add"></input>
+        </form>
+
+        <br>
+        <br>
+        <form method="POST" action="{% url 'home' %}">
+                {% csrf_token %}
+                <input class="btn btn-danger" type="submit" value="Cancel"></input>
+            </form>
+    </div>
+
+
+	{% endblock %}
+</body>
+</html>

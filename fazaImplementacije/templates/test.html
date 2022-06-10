@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<!-- Dejan Draskovic -->
+<head>
+    {% load static %}
+</head>
+<body>
+    {% block content %}
+
+        <div class="container mt-sm-5 my-1">
+        <form method="POST">
+            {% csrf_token %}
+            {% for question in forms_questions %}
+
+                <div class="question ml-sm-5 pl-sm-5 pt-2">
+                <div class="py-2 h5"><b>{{ question.question_text }}</b></div>
+                <div class="ml-md-3 ml-sm-3 pl-md-5 pt-sm-0 pt-3" id="options">
+                {{ question }}
+                </div>
+                </div>
+
+            {% endfor %}
+            <br>
+            <input class="btn btn-light" type="submit" value="Done"></input>
+        </form>
+
+        <br>
+
+        <a href="{% url 'article' article_id %}"  class="linkNoDeco">
+            <input class="btn btn-danger" type="submit" value="Cancel"></input>
+        </a>
+        </div>
+
+	{% endblock %}
+</body>
+</html>
+

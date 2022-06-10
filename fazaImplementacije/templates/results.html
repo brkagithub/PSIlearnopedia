@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+<html lang="en" xmlns="http://www.w3.org/1999/html" style="height: 100%">
+<!-- Dejan Draskovic -->
+<head>
+    {% load static %}
+
+</head>
+<body style="min-height: 100%">
+
+    {% block content %}
+
+        <div style="height: 100% !important">
+
+        <div style="text-align: center">
+            <br>
+
+            {% if grade >= 50 %}
+                <h1><b id="tekst">Cestitamo! Imali ste {{ grade }}% na artiklu {{ article_title }}</b></h1>
+            {% else %}
+                <h1><b id="tekst">Vise srece sledeci put, imali ste {{ grade }}% na artiklu {{ article_title }}</b></h1>
+            {% endif %}
+
+            <br>
+            <a href="{% url 'article' article_id %}"  class="linkNoDeco">
+                <input class="btn btn-light" type="submit" value="Back"></input>
+            </a>
+        </div>
+
+
+
+        </div>
+
+	{% endblock %}
+
+</body>
+</html>

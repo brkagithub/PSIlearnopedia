@@ -1,0 +1,48 @@
+.categoryChip {
+  background-color: #9daaf2;
+  color: #1a2238;
+  margin-right: 15px;
+  margin-top: 5px;
+  padding: 8px;
+}
+
+#sadrzaj {
+  color: #9daaf2;
+}
+
+.underlinedAuthor {
+  text-decoration: underline;
+  margin-bottom: 25px;
+}
+
+#content {
+  margin-top: 15px;
+  margin-bottom: 30px;
+}
+
+#categories {
+  text-align: left;
+}
+
+#likeDislike {
+  text-align: right;
+}
+
+.marginLR60 {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+#author {
+  margin-top: 15px;
+  margin-bottom: 30px;
+}
+
+.btnTest {
+  background-color: white;
+  color: #1a2238;
+}
+
+textLeft {
+  text-align: left !important;
+}
