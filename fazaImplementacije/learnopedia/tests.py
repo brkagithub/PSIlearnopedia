@@ -52,6 +52,70 @@ def create_category(name, desc):
 def create_ArticleCategory(article, category):
     return ArticleCategory.objects.create(articleId=article, categoryId=category)
 
+def create_Comment(article, kor):
+    return Comment.objects.create(articleId=article,korisnikId=kor,text='Ovo je Komentar')
+
+
+
+#Rasa Stojanovic
+class deleteComment(TestCase):
+    def testDeleteComment(self):
+        kor = create_mod('tasha')
+        logged_in = self.client.login(username='tasha', password='T@sh@1234')
+
+        article = create_article(kor)
+        comm = create_Comment(article,kor)
+
+        response1 =self.client.get("/deletecomment/" + str(comm.commentId))
+        response2 = self.client.get("/article/" + str(article.articleId))
+        self.assertNotContains(response2, "Ovo je Komentar")
+
+#Rasa Stojanovic
+class deleteCategory(TestCase):
+    def testDeleteCategory(self):
+        kor = create_mod('tasha')
+        logged_in = self.client.login(username='tasha', password='T@sh@1234')
+
+        article = create_article(kor)
+        category = create_category("Fudbal","to je sport")
+        article_category = create_ArticleCategory(article,category)
+
+        response1 = self.client.get("/" + str(article.articleId) + "/deleteCategory/" + str(category.categoryId))
+        response2 = self.client.get("/article/" + str(article.articleId))
+        self.assertNotContains(response2, "Fudbal")
+
+#Rasa Stojanovic
+class ArticleTest(TestCase):
+    def testArticleView(self):
+        kor = create_mod("tasha")
+        art = create_article(kor)
+        url_pk = art.pk
+        response = self.client.get("/article/" + str(url_pk))
+        self.assertContains(response, "ovo je clanak")
+
+#Rasa Stojanovic
+class ProfileTest(TestCase):
+    def testProfileView(self):
+        kor = create_mod("tasha")
+        url_pk = kor.pk
+        response = self.client.get("/profile/" + str(url_pk))
+        self.assertContains(response, "tasha")
+
+#Rasa Stojanovic
+class LoginTest(TestCase):
+    def test_login(self):
+        kor = create_mod2('test')
+        url = "/login/"
+
+        responseLogin = self.client.post(url, data={
+            'username' : 'test',
+            'password' : 'Tash@1234',
+        })
+        user = auth.get_user(self.client)
+        print(user)
+        response = self.client.get("")
+        self.assertContains(response, "Logout")
+
 
 # Marko Brkic
 class MakeCommentTest(TestCase):
